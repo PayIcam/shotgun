@@ -1,6 +1,6 @@
 
     <div class="footer">
-    <p>&copy; Matthieu Guffroy - 2014 - <a href="admin">Administration</a></p>
+    <p>&copy; PayIcam - 2016 - <a href="admin">Administration</a></p>
     </div>
 
     </div> <!-- /container -->

@@ -228,7 +228,8 @@ class Option {
         $this->date_paiement = $data["option_date_paiement"];
         $this->status = $data["option_status"];
         $this->choice_name = $data["choice_name"];
-        $this->choice_price = $data["choice_price"];
+        $this->choice_priceC = $data["choice_priceC"];
+        $this->choice_priceNC = $data["choice_priceNC"];
     }
 
     /*

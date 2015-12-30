@@ -1,15 +1,15 @@
 {
-    "name": "mattgu74/shotgunutc",
+    "name": "PayIcam/shotgunutc",
     "type": "project",
-    "description": "Micro-billetterie pour les associations utcéenne.",
+    "description": "Micro-billetterie pour les associations de l'icam.",
     "autoload": {
+        "classmap": ["vendor/payutc-json-client/jsonclient/"],
         "psr-0": { "Shotgunutc": "src/" }
     },
     "require": {
         "slim/slim": "2.*",
         "nategood/httpful": "*",
         "ginger/client": "*",
-        "payutc/php-client": "dev-master",
         "doctrine/dbal": "2.*"
     }
 }

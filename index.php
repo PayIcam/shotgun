@@ -57,27 +57,25 @@ try {
 } catch(\Exception $e) {
     Config::$conf = Array();
     // Set the only one forced config line, that we have to change manually.
-    Config::set('payutc_server', "https://api.nemopay.net/services");
+    Config::set('payutc_server', "http://payicam.dev/server/web/");
     Config::set('proxy', '');
     Config::set('self_url', "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
-    Config::set('title', "ShotgunUTC");
+    Config::set('title', "Shotgun PayIcam");
     Config::set('system_id', '');
 }
 
 // get payutcClient
 function getPayutcClient($service) {
-    return new AutoJsonClient(
+    return new \JsonClient\AutoJsonClient(
         Config::get('payutc_server'),
         $service,
         array(CURLOPT_PROXY => Config::get('proxy')),
         "Payutc Json PHP Client",
-        isset($_SESSION['payutc_cookie']) ? $_SESSION['payutc_cookie'] : "",
-        Config::get('system_id', ''),
-        Config::get('payutc_key', ''));
+        isset($_SESSION['payutc_cookie']) ? $_SESSION['payutc_cookie'] : "");
 }
 $payutcClient = getPayutcClient("WEBSALE");
 
-$admin = false;
+$admin = true;
 
 $app = new \Slim\Slim();
 
@@ -90,7 +88,7 @@ $app->hook('slim.before', function () use ($app) {
 
 // Set default data for view
 $app->view->setData(array(
-    'title' => Config::get('title', 'ShotgunUTC')
+    'title' => Config::get('title', 'Shotgun PayIcam')
 ));
 
 /*
@@ -374,6 +372,7 @@ $app->post('/choiceform', function() use($app, $admin) {
                 "parent" =>  $desc->payutc_cat_id,
                 "prix" => $choice->priceC,
                 "stock" => $choice->stock,
+                "image" => '',
                 "alcool" => 0,
                 "cotisant" => False,
                 "fun_id" => $desc->payutc_fun_id));
@@ -385,6 +384,7 @@ $app->post('/choiceform', function() use($app, $admin) {
                 "parent" =>  $desc->payutc_cat_id,
                 "prix" => $choice->priceNC,
                 "stock" => $choice->stock,
+                "image" => '',
                 "alcool" => 0,
                 "cotisant" => False,
                 "fun_id" => $desc->payutc_fun_id));
@@ -400,6 +400,7 @@ $app->post('/choiceform', function() use($app, $admin) {
                 "parent" =>  $desc->payutc_cat_id,
                 "prix" => $choice->priceC,
                 "stock" => $choice->stock,
+                "image" => '',
                 "alcool" => 0,
                 "cotisant" => False,
                 "fun_id" => $desc->payutc_fun_id));
@@ -412,6 +413,7 @@ $app->post('/choiceform', function() use($app, $admin) {
                 "parent" =>  $desc->payutc_cat_id,
                 "prix" => $choice->priceNC,
                 "stock" => $choice->stock,
+                "image" => '',
                 "alcool" => 0,
                 "cotisant" => False,
                 "fun_id" => $desc->payutc_fun_id));
@@ -440,7 +442,7 @@ $app->get('/admin', function() use($app, $admin) {
     } catch(Exception $e) {
         $status = null;
     }
-    if(!$status->user) {
+    if(!isset($status) || !$status->user) {
         $app->redirect("loginpayutc?goto=admin");
     }
     $fundations = $payutcClient->getFundations();
@@ -473,7 +475,11 @@ $app->get('/login', function() use($app, $payutcClient) {
     } else {
         $cas = new Cas($payutcClient->getCasUrl());
         $user = $cas->authenticate($_GET["ticket"], $_SESSION['service']);
-        $_SESSION['payutc_cookie'] = $payutcClient->cookies;
+        $_SESSION['payutc_cookie'] = $payutcClient->cookie;
+        try {
+            $result = $payutcClient->loginApp(array("key"=>Config::get('payutc_key')));     
+        } catch (\JsonClient\JsonException $e) { die("error login application."); }
+        $status = $payutcClient->getStatus();
         $_SESSION['username'] = $user;
         $app->response->redirect(isset($_GET['goto']) ? $_GET['goto'] : "index", 303);
     }
@@ -487,10 +493,57 @@ $app->get('/loginpayutc', function() use($app, $payutcClient) {
         $casUrl = $payutcClient->getCasUrl()."login?service=".urlencode($service);
         $app->response->redirect($casUrl, 303);
     } else {
-        $result = $payutcClient->loginCas2(array("ticket" => $_GET["ticket"], "service" => $_SESSION['service']));
-        $_SESSION['sessionid'] = $result->sessionid;
-        $_SESSION['username'] = $result->username;
-	$_SESSION['payutc_cookie'] = $payutcClient->cookies;
+        // var_dump($_GET["ticket"]);
+        // var_dump($_SESSION);
+        // $json_client = new \JsonClient\AutoJsonClient(
+        //     Config::get('payutc_server'),
+        //     "WEBSALE",
+        //     array(),
+        //     "Payutc Json PHP Client",
+        //     isset($_SESSION['payutc_cookie']) ? $_SESSION['payutc_cookie'] : ""
+        // );
+        // // $json_client = new \JsonClient\AutoJsonClient(Config::get('payutc_server'), "WEBSALE");
+        // $result = $json_client->loginCas(array(
+        //     "ticket" => $_GET["ticket"],
+        //     "service" => $_SESSION['service']
+        // ));
+        // var_dump($result);
+        // var_dump($json_client->getStatus());
+
+        // try {
+        //     $result = $json_client->loginApp(array("key"=>Config::get('payutc_key')));     
+        // } catch (\JsonClient\JsonException $e) { die("error login application."); }
+        // var_dump($result);
+        // var_dump($json_client->getStatus());
+
+        // var_dump($json_client);
+        // $_SESSION['payutc_cookie'] = $json_client->cookie;
+        // echo '____________';
+        // $c = new \JsonClient\AutoJsonClient(
+        //     Config::get('payutc_server'),
+        //     "WEBSALE",
+        //     array(),
+        //     "Payutc Json PHP Client",
+        //     isset($_SESSION['payutc_cookie']) ? $_SESSION['payutc_cookie'] : ""
+        // );
+        // var_dump($_SESSION['payutc_cookie']);
+        // var_dump($c);
+        // var_dump($c->getStatus());
+        // echo '____________';
+
+        // $_SESSION['payutc_cookie'] = $c->cookie;
+        // var_dump($_SESSION);
+        $result = $payutcClient->loginCas(array("ticket" => $_GET["ticket"], "service" => $_SESSION['service']));
+        try {
+            $result = $payutcClient->loginApp(array("key"=>Config::get('payutc_key')));     
+        } catch (\JsonClient\JsonException $e) { die("error login application."); }
+        $status = $payutcClient->getStatus();
+        // var_dump($payutcClient->getStatus());
+        // var_dump($payutcClient);
+        // exit;
+        $_SESSION['sessionid'] = '';
+        $_SESSION['username'] = $status->user;
+        $_SESSION['payutc_cookie'] = $payutcClient->cookie;
         $app->response->redirect($_GET['goto'], 303);
     }
 });
@@ -529,7 +582,7 @@ $app->get('/getsql', function() use($app, $payutcClient, $admin) {
     } else {
         $app->render('install_not_admin.php', array(
             "status" => null,
-            "debug" => $payutcClient->cookies));
+            "debug" => $payutcClient->cookie));
     }
     $app->render('footer.php');
 });
@@ -544,7 +597,7 @@ $app->get('/install', function() use($app, $payutcClient, $admin) {
     } else {
         $app->render('install_not_admin.php', array(
             "status" => null,
-            "debug" => $payutcClient->cookies));
+            "debug" => $payutcClient->cookie));
     }
     $app->render('footer.php');
 });
