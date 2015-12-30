@@ -591,9 +591,11 @@ $app->get('/callback', function() use($app, $payutcClient, $admin) {
     $payutcClient = getPayutcClient("WEBSALE");
     $options = Option::getAll();
     foreach($options as $opt) {
-        $desc = new Desc($opt->fk_desc_id);
-        $funId = $desc->payutc_fun_id;
-        $opt->checkStatus($payutcClient, $funId);
+        if($opt->status == 'W') {
+            $desc = new Desc($opt->fk_desc_id);
+            $funId = $desc->payutc_fun_id;
+            $opt->checkStatus($payutcClient, $funId);
+        }
     }
     $app->redirect('index');
 });
