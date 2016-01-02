@@ -25,9 +25,7 @@ use Shotgunutc\Option;
 use Shotgunutc\Config;
 use Shotgunutc\Cas;
 use \Ginger\Client\GingerClient;
-use \Payutc\Client\AutoJsonClient;
-use \Payutc\Client\JsonException;
-
+use \JsonClient\JsonException;
 
 function checkRight($payutcClient, $user, $app, $fun_check, $fun_id) {
     if($fun_check and $fun_id == null) {
@@ -493,54 +491,12 @@ $app->get('/loginpayutc', function() use($app, $payutcClient) {
         $casUrl = $payutcClient->getCasUrl()."login?service=".urlencode($service);
         $app->response->redirect($casUrl, 303);
     } else {
-        // var_dump($_GET["ticket"]);
-        // var_dump($_SESSION);
-        // $json_client = new \JsonClient\AutoJsonClient(
-        //     Config::get('payutc_server'),
-        //     "WEBSALE",
-        //     array(),
-        //     "Payutc Json PHP Client",
-        //     isset($_SESSION['payutc_cookie']) ? $_SESSION['payutc_cookie'] : ""
-        // );
-        // // $json_client = new \JsonClient\AutoJsonClient(Config::get('payutc_server'), "WEBSALE");
-        // $result = $json_client->loginCas(array(
-        //     "ticket" => $_GET["ticket"],
-        //     "service" => $_SESSION['service']
-        // ));
-        // var_dump($result);
-        // var_dump($json_client->getStatus());
-
-        // try {
-        //     $result = $json_client->loginApp(array("key"=>Config::get('payutc_key')));     
-        // } catch (\JsonClient\JsonException $e) { die("error login application."); }
-        // var_dump($result);
-        // var_dump($json_client->getStatus());
-
-        // var_dump($json_client);
-        // $_SESSION['payutc_cookie'] = $json_client->cookie;
-        // echo '____________';
-        // $c = new \JsonClient\AutoJsonClient(
-        //     Config::get('payutc_server'),
-        //     "WEBSALE",
-        //     array(),
-        //     "Payutc Json PHP Client",
-        //     isset($_SESSION['payutc_cookie']) ? $_SESSION['payutc_cookie'] : ""
-        // );
-        // var_dump($_SESSION['payutc_cookie']);
-        // var_dump($c);
-        // var_dump($c->getStatus());
-        // echo '____________';
-
-        // $_SESSION['payutc_cookie'] = $c->cookie;
-        // var_dump($_SESSION);
         $result = $payutcClient->loginCas(array("ticket" => $_GET["ticket"], "service" => $_SESSION['service']));
         try {
             $result = $payutcClient->loginApp(array("key"=>Config::get('payutc_key')));     
         } catch (\JsonClient\JsonException $e) { die("error login application."); }
         $status = $payutcClient->getStatus();
-        // var_dump($payutcClient->getStatus());
-        // var_dump($payutcClient);
-        // exit;
+
         $_SESSION['sessionid'] = '';
         $_SESSION['username'] = $status->user;
         $_SESSION['payutc_cookie'] = $payutcClient->cookie;

@@ -1,6 +1,6 @@
 <div class="jumbotron">
 <h1><?php echo $title; ?></h1>
-<p class="lead">Bienvenue sur la microbilletterie utcéenne.</p>
+<p class="lead">Bienvenue sur la microbilletterie de l'Icam.</p>
 <p>Vous trouverez ci-dessous la liste des shotguns à venir.</p>
 </div>
 
