@@ -10,7 +10,7 @@ use Shotgunutc\Config;
       <label for="<?php echo $item[0]; ?>"><?php echo $item[1]; ?></label>
       <input type="text" class="form-control" name="<?php echo $item[0]; ?>" value="<?php echo Config::get($item[0], ""); ?>" >
     </div>
-  <? endforeach; ?>
+  <?php endforeach; ?>
   <button type="submit" class="btn btn-primary">Enregistrer</button> <a class="btn btn-default" href="installpayutc">Générer une application payutc</a>
 </form>
 <br />
