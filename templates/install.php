@@ -11,7 +11,7 @@ use Shotgunutc\Config;
       <input type="text" class="form-control" name="<?php echo $item[0]; ?>" value="<?php echo Config::get($item[0], ""); ?>" >
     </div>
   <?php endforeach; ?>
-  <button type="submit" class="btn btn-primary">Enregistrer</button> <a class="btn btn-default" href="installpayutc">Générer une application payutc</a>
+  <button type="submit" class="btn btn-primary">Enregistrer</button> <a class="btn btn-default" href="installpayutc">Générer une application sur PayIcam</a>
 </form>
 <br />
 </div>
