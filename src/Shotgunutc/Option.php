@@ -228,8 +228,7 @@ class Option {
         $this->date_paiement = $data["option_date_paiement"];
         $this->status = $data["option_status"];
         $this->choice_name = $data["choice_name"];
-        $this->choice_priceC = $data["choice_priceC"];
-        $this->choice_priceNC = $data["choice_priceNC"];
+        $this->choice_price = ($this->user_cotisant)?$data["choice_priceC"]:$data["choice_priceNC"];
     }
 
     /*
@@ -238,7 +237,7 @@ class Option {
     public static function install() {
         $query = "CREATE TABLE IF NOT EXISTS `".Config::get("db_pref", "shotgun_")."option` (
               `option_id` int(6) NOT NULL AUTO_INCREMENT,
-              `user_login` varchar(10) NOT NULL,
+              `user_login` varchar(125) NOT NULL,
               `user_prenom` varchar(50) NOT NULL,
               `user_nom` varchar(50) NOT NULL,
               `user_mail` varchar(125) NOT NULL,
