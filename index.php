@@ -440,7 +440,7 @@ $app->get('/admin', function() use($app, $admin) {
     } catch(Exception $e) {
         $status = null;
     }
-    if(!isset($status) || !$status->user) {
+    if(!isset($status) || !$status->user || !$status->application || ( isset($status->application->app_url) && strpos($status->application->app_url, 'shotgun') !== false) ) {
         $app->redirect("loginpayutc?goto=admin");
     }
     $fundations = $payutcClient->getFundations();
