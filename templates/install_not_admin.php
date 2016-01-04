@@ -9,7 +9,7 @@
         <a class="btn btn-danger" href="logout?goto=install">Déconnexion</a>
     <?php else: ?>
         Pour accéder à l'interface de configuration, vous devez vous connecter et avoir les droits "SuperUtilisateurs" sur PayIcam.<br />
-        <a class="btn btn-primary pull-right" href="loginpayutc?goto=install">Connexion</a>
+        <a class="btn btn-primary pull-right" href="login?goto=install">Connexion</a>
     <?php endif; ?> 
     <br />
     <br />

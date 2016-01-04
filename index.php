@@ -73,14 +73,20 @@ function getPayutcClient($service) {
 }
 $payutcClient = getPayutcClient("WEBSALE");
 
-$admin = true;
+$admin = $payutcClient->isSuperAdmin();
 
 $app = new \Slim\Slim();
 
-$app->hook('slim.before', function () use ($app) {
+$app->hook('slim.before', function () use ($app, $payutcClient, $admin) {
     // check that system is installed
     if(!Config::isInstalled()) {
         $app->flashNow('info', 'This application is not yet configured, please click <a href="install" >here</a> !');
+    }
+
+    $status = $payutcClient->getStatus();
+    if((!isset($status) || !$status->user) && $app->request->getResourceUri() != '/about' && $app->request->getResourceUri() != '/login') {
+        $app->flash('info', "Vous devez être connecté pour accéder au reste de l'application");
+        $app->redirect('about');
     }
 });
 
@@ -441,7 +447,7 @@ $app->get('/admin', function() use($app, $admin) {
         $status = null;
     }
     if(!isset($status) || !$status->user || !$status->application || ( isset($status->application->app_url) && strpos($status->application->app_url, 'shotgun') === false) ) {
-        $app->redirect("loginpayutc?goto=admin");
+        $app->redirect("login?goto=admin");
     }
     $fundations = $payutcClient->getFundations();
     if(count($fundations) == 0) {
@@ -464,7 +470,7 @@ $app->get('/admin', function() use($app, $admin) {
 */
 
 // Connection standard (not payutc)
-$app->get('/login', function() use($app, $payutcClient) {
+$app->get('/login_not_payicam', function() use($app, $payutcClient) {
     if(empty($_GET["ticket"])) {
         $service = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}"; 
         $_SESSION['service'] = $service;
@@ -478,13 +484,14 @@ $app->get('/login', function() use($app, $payutcClient) {
             $result = $payutcClient->loginApp(array("key"=>Config::get('payutc_key')));     
         } catch (\JsonClient\JsonException $e) { die("error login application."); }
         $status = $payutcClient->getStatus();
+
         $_SESSION['username'] = $user;
         $app->response->redirect(isset($_GET['goto']) ? $_GET['goto'] : "index", 303);
     }
 });
 
 // Connection via payutc
-$app->get('/loginpayutc', function() use($app, $payutcClient) {
+$app->get('/login', function() use($app, $payutcClient) {
     if(empty($_GET["ticket"])) {
         $service = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}"; 
         $_SESSION['service'] = $service;
@@ -500,7 +507,7 @@ $app->get('/loginpayutc', function() use($app, $payutcClient) {
         $_SESSION['sessionid'] = '';
         $_SESSION['username'] = $status->user;
         $_SESSION['payutc_cookie'] = $payutcClient->cookie;
-        $app->response->redirect($_GET['goto'], 303);
+        $app->response->redirect(isset($_GET['goto']) ? $_GET['goto'] : "index", 303);
     }
 });
 
@@ -537,7 +544,7 @@ $app->get('/getsql', function() use($app, $payutcClient, $admin) {
             ));
     } else {
         $app->render('install_not_admin.php', array(
-            "status" => null,
+            "status" => $payutcClient->getStatus(),
             "debug" => $payutcClient->cookie));
     }
     $app->render('footer.php');
@@ -552,7 +559,7 @@ $app->get('/install', function() use($app, $payutcClient, $admin) {
         $app->render('install.php', array());
     } else {
         $app->render('install_not_admin.php', array(
-            "status" => null,
+            "status" => $payutcClient->getStatus(),
             "debug" => $payutcClient->cookie));
     }
     $app->render('footer.php');
