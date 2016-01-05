@@ -498,7 +498,14 @@ $app->get('/login', function() use($app, $payutcClient) {
         $casUrl = $payutcClient->getCasUrl()."login?service=".urlencode($service);
         $app->response->redirect($casUrl, 303);
     } else {
-        $result = $payutcClient->loginCas(array("ticket" => $_GET["ticket"], "service" => $_SESSION['service']));
+        try {
+            $result = $payutcClient->loginCas(array("ticket" => $_GET["ticket"], "service" => $_SESSION['service']));
+        } catch (Exception $e) {
+            if (strpos($e, 'UserNotFound') !== false ){
+                $app->flash('info', 'Vous ne faites pas encore parti de PayIcam, inscrivez vous.');
+                header('Location:../casper');exit;
+            }
+        }
         try {
             $result = $payutcClient->loginApp(array("key"=>Config::get('payutc_key')));     
         } catch (\JsonClient\JsonException $e) {
