@@ -32,22 +32,22 @@
     <body>
 
     <div class="container">
-    <div class="header">
-    <ul class="nav nav-pills pull-right">
-      <li <?php if (isset($active) && $active == "index") { ?> class="active" <?php } ?>><a href="index">Accueil</a></li>
-      <li <?php if (isset($active) && $active == "about") { ?> class="active" <?php } ?>><a href="about">A propos</a></li>
-    <?php if(isset($_SESSION['username'])): ?>
-      <li><a href="logout">Deconnexion</a></li>
-    <?php else: ?>
-      <li><a href="login">Connexion</a></li>
-    <?php endif; ?>
-    </ul>
-    <h3 class="text-muted"><?php echo $title; ?></h3>
-    </div>
+        <div class="header">
+            <ul class="nav nav-pills pull-right">
+                <li <?php if (isset($active) && $active == "index") { ?> class="active" <?php } ?>><a href="index">Accueil</a></li>
+                <li <?php if (isset($active) && $active == "about") { ?> class="active" <?php } ?>><a href="about">A propos</a></li>
+                <?php if(isset($_SESSION['username'])): ?>
+                    <li><a href="logout">Deconnexion</a></li>
+                <?php else: ?>
+                    <li><a href="login">Connexion</a></li>
+                <?php endif; ?>
+            </ul>
+            <h3 class="text-muted"><?php echo $title; ?></h3>
+        </div>
 
-    <?php
-        // Handle Flash message
-        if(isset($flash['info'])) {
-            echo '<div class="alert alert-info">'.$flash['info'].'</div>';
-        }
-    ?>
+        <?php
+            // Handle Flash message
+            if(isset($flash['info'])) {
+                echo '<div class="alert alert-info">'.$flash['info'].'</div>';
+            }
+        ?>

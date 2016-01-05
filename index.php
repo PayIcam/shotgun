@@ -74,6 +74,7 @@ function getPayutcClient($service) {
 $payutcClient = getPayutcClient("WEBSALE");
 
 $admin = $payutcClient->isSuperAdmin();
+$isAdminFondation = $payutcClient->isAdmin();
 
 $app = new \Slim\Slim();
 
@@ -100,30 +101,30 @@ $app->view->setData(array(
 */
 
 // Welcome page, list all current Shotguns
-$app->get('/', function() use($app) {
+$app->get('/', function() use($app, $isAdminFondation) {
     $app->redirect('index');
 });
-$app->get('/index', function() use($app) {
+$app->get('/index', function() use($app, $isAdminFondation) {
     $app->render('header.php', array(
         "active" => "index"
         ));
     $app->render('index.php', array(
         "shotguns" => Desc::getAll()
         ));
-    $app->render('footer.php');
+    $app->render('footer.php', array('isAdminFondation'=>$isAdminFondation));
 });
 
 // About page, list all current Shotguns
-$app->get('/about', function() use($app) {
+$app->get('/about', function() use($app, $isAdminFondation) {
     $app->render('header.php', array(
         "active" => "about"
         ));
     $app->render('about.php', array());
-    $app->render('footer.php');
+    $app->render('footer.php', array('isAdminFondation'=>$isAdminFondation));
 });
 
 // Show a specific shotgun page
-$app->get('/shotgun', function() use($app) {
+$app->get('/shotgun', function() use($app, $isAdminFondation) {
     $gingerClient = new GingerClient(Config::get('ginger_key'), Config::get('ginger_server'));
     if(!isset($_GET["id"])) {
         $app->redirect("index");
@@ -138,7 +139,7 @@ $app->get('/shotgun', function() use($app) {
         "username" => isset($_SESSION['username']) ? $_SESSION['username'] : null,
         "user" => isset($_SESSION['username']) ? $gingerClient->getUser($_SESSION["username"]) : null,
         "payutcClient" => getPayutcClient("WEBSALE")));
-    $app->render('footer.php');
+    $app->render('footer.php', array('isAdminFondation'=>$isAdminFondation));
 });
 
 // Show a specific shotgun page
@@ -191,7 +192,7 @@ $app->get('/cancel', function() use($app) {
     ADMIN ZONE
 */
 
-$app->get('/shotgunform', function() use($app, $admin) {
+$app->get('/shotgunform', function() use($app, $admin, $isAdminFondation) {
     $payutcClient = getPayutcClient("GESARTICLE");
     if(!isset($_GET["fun_id"])) {
         $app->redirect("admin");
@@ -217,10 +218,10 @@ $app->get('/shotgunform', function() use($app, $admin) {
     $app->render('form.php', array(
         "form" => $form
     ));
-    $app->render('footer.php');
+    $app->render('footer.php', array('isAdminFondation'=>$isAdminFondation));
 });
 
-$app->post('/shotgunform', function() use($app, $admin) {
+$app->post('/shotgunform', function() use($app, $admin, $isAdminFondation) {
     $payutcClient = getPayutcClient("GESARTICLE");
     if(!isset($_GET["fun_id"])) {
         $app->redirect("admin");
@@ -261,14 +262,14 @@ $app->post('/shotgunform', function() use($app, $admin) {
             $app->render('form.php', array(
                 "form" => $form
             ));
-            $app->render('footer.php');
+            $app->render('footer.php', array('isAdminFondation'=>$isAdminFondation));
             return;
         }
     }
     $app->redirect("adminshotgun?id=".$desc_id);
 });
 
-$app->get('/adminshotgun', function() use($app) {
+$app->get('/adminshotgun', function() use($app, $isAdminFondation) {
     $payutcClient = getPayutcClient("GESARTICLE");
     if(!isset($_GET["id"])) {
         $app->redirect("admin");
@@ -289,7 +290,7 @@ $app->get('/adminshotgun', function() use($app) {
     $app->render('adminshotgun.php', array(
         "shotgun" => $desc
     ));
-    $app->render('footer.php');
+    $app->render('footer.php', array('isAdminFondation'=>$isAdminFondation));
 });
 
 $app->get('/export', function() use($app) {
@@ -312,7 +313,7 @@ $app->get('/export', function() use($app) {
     $desc->exportCSV();
 });
 
-$app->get('/choiceform', function() use($app) {
+$app->get('/choiceform', function() use($app, $isAdminFondation) {
     $payutcClient = getPayutcClient("GESARTICLE");
     if(!isset($_GET["id"])) {
         $app->redirect("admin");
@@ -343,10 +344,10 @@ $app->get('/choiceform', function() use($app) {
     $app->render('form.php', array(
         "form" => $form
     ));
-    $app->render('footer.php');
+    $app->render('footer.php', array('isAdminFondation'=>$isAdminFondation));
 });
 
-$app->post('/choiceform', function() use($app, $admin) {
+$app->post('/choiceform', function() use($app, $admin, $isAdminFondation) {
     $payutcClient = getPayutcClient("GESARTICLE");
     if(!isset($_GET["id"])) {
         $app->redirect("admin");
@@ -431,7 +432,7 @@ $app->post('/choiceform', function() use($app, $admin) {
             $app->render('form.php', array(
                 "form" => $form
             ));
-            $app->render('footer.php');
+            $app->render('footer.php', array('isAdminFondation'=>$isAdminFondation));
             return;
         }
     }
@@ -439,7 +440,7 @@ $app->post('/choiceform', function() use($app, $admin) {
 });
 
 // Admin panel, welcome page
-$app->get('/admin', function() use($app, $admin) {
+$app->get('/admin', function() use($app, $admin, $isAdminFondation) {
     $payutcClient = getPayutcClient("GESARTICLE");
     try {
         $status = $payutcClient->getStatus();
@@ -460,7 +461,7 @@ $app->get('/admin', function() use($app, $admin) {
         "fundations" => $fundations,
         "shotguns" => Desc::getAll(),
         ));
-    $app->render('footer.php');
+    $app->render('footer.php', array('isAdminFondation'=>$isAdminFondation));
 });
 
 
@@ -542,7 +543,7 @@ $app->get('/logout', function() use($app, $payutcClient) {
     Installation/Configuration zone
 */
 
-$app->get('/getsql', function() use($app, $payutcClient, $admin) {
+$app->get('/getsql', function() use($app, $payutcClient, $admin, $isAdminFondation) {
     // Remove flash (we are on the good page to install/configure system)
     $app->flashNow('info', null);
     $app->render('header.php', array());
@@ -557,11 +558,11 @@ $app->get('/getsql', function() use($app, $payutcClient, $admin) {
             "status" => $payutcClient->getStatus(),
             "debug" => $payutcClient->cookie));
     }
-    $app->render('footer.php');
+    $app->render('footer.php', array('isAdminFondation'=>$isAdminFondation));
 });
 
 // Install options
-$app->get('/install', function() use($app, $payutcClient, $admin) {
+$app->get('/install', function() use($app, $payutcClient, $admin, $isAdminFondation) {
     // Remove flash (we are on the good page to install/configure system)
     $app->flashNow('info', null);
     $app->render('header.php', array());
@@ -572,7 +573,7 @@ $app->get('/install', function() use($app, $payutcClient, $admin) {
             "status" => $payutcClient->getStatus(),
             "debug" => $payutcClient->cookie));
     }
-    $app->render('footer.php');
+    $app->render('footer.php', array('isAdminFondation'=>$isAdminFondation));
 });
 
 // Install options
