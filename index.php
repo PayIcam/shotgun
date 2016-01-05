@@ -501,7 +501,10 @@ $app->get('/login', function() use($app, $payutcClient) {
         $result = $payutcClient->loginCas(array("ticket" => $_GET["ticket"], "service" => $_SESSION['service']));
         try {
             $result = $payutcClient->loginApp(array("key"=>Config::get('payutc_key')));     
-        } catch (\JsonClient\JsonException $e) { die("error login application."); }
+        } catch (\JsonClient\JsonException $e) {
+            $app->flashNow('info', "error login application, veuillez finir l'installation de Shotgun");
+            $_GET['goto'] = 'install';
+        }
         $status = $payutcClient->getStatus();
 
         $_SESSION['sessionid'] = '';
