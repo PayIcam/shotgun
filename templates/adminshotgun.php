@@ -19,8 +19,8 @@
     <table class="table">
         <thead>
             <th>Nom du choix</th>
-            <th>Prix cotisant</th>
-            <th>Prix non-cotisant</th>
+            <th>Prix <!-- cotisant --></th>
+            <!-- <th>Prix non-cotisant</th> -->
             <th>Place Shotgunnée</th>
             <th>Place en cours de shotgun</th>
             <th>Place Dispo</th>
@@ -31,7 +31,7 @@
             <tr>
                 <td><?php echo $choice->name; ?></td>
                 <td><?php echo $choice->priceC/100; ?> €</td>
-                <td><?php echo $choice->priceNC/100; ?> €</td>
+                <!-- <td><?php // echo $choice->priceNC/100; ?> €</td> -->
                 <td><?php echo $choice->getNbPlace('V'); ?></td>
                 <td><?php echo $choice->getNbPlace('W'); ?></td>
                 <td><?php echo $choice->getNbPlace('A'); ?></td>

@@ -168,7 +168,7 @@ $app->get('/makeshotgun', function() use($app) {
     $app->redirect("shotgun?id=".$id);
 });
 
-// REmove a choice
+// Remove a choice
 $app->get('/cancel', function() use($app) {
     $gingerClient = new GingerClient(Config::get('ginger_key'), Config::get('ginger_server'));
     $payutcClient = getPayutcClient("WEBSALE");
@@ -383,16 +383,16 @@ $app->post('/choiceform', function() use($app, $admin, $isAdminFondation) {
                 "fun_id" => $desc->payutc_fun_id));
 
         // article non cotisant
-        $payutcClient->setProduct(array(
-                "obj_id" => $choice->payutc_art_idNC,
-                "name" => $desc->titre." ".$choice->name, 
-                "parent" =>  $desc->payutc_cat_id,
-                "prix" => $choice->priceNC,
-                "stock" => $choice->stock,
-                "image" => '',
-                "alcool" => 0,
-                "cotisant" => False,
-                "fun_id" => $desc->payutc_fun_id));
+        // $payutcClient->setProduct(array(
+        //         "obj_id" => $choice->payutc_art_idNC,
+        //         "name" => $desc->titre." ".$choice->name, 
+        //         "parent" =>  $desc->payutc_cat_id,
+        //         "prix" => $choice->priceNC,
+        //         "stock" => $choice->stock,
+        //         "image" => '',
+        //         "alcool" => 0,
+        //         "cotisant" => False,
+        //         "fun_id" => $desc->payutc_fun_id));
         $choice->update();
     } else {
         $choice = new Choice($id);
@@ -413,18 +413,18 @@ $app->post('/choiceform', function() use($app, $admin, $isAdminFondation) {
                 $choice->payutc_art_idC = $ret->success;
             }
             // Création de l'article non cotisant dans payutc
-            $ret = $payutcClient->setProduct(array(
-                "name" => $desc->titre." ".$choice->name, 
-                "parent" =>  $desc->payutc_cat_id,
-                "prix" => $choice->priceNC,
-                "stock" => $choice->stock,
-                "image" => '',
-                "alcool" => 0,
-                "cotisant" => False,
-                "fun_id" => $desc->payutc_fun_id));
-            if(isset($ret->success)) {
-                $choice->payutc_art_idNC = $ret->success;
-            }
+            // $ret = $payutcClient->setProduct(array(
+            //     "name" => $desc->titre." ".$choice->name, 
+            //     "parent" =>  $desc->payutc_cat_id,
+            //     "prix" => $choice->priceNC,
+            //     "stock" => $choice->stock,
+            //     "image" => '',
+            //     "alcool" => 0,
+            //     "cotisant" => False,
+            //     "fun_id" => $desc->payutc_fun_id));
+            // if(isset($ret->success)) {
+            //     $choice->payutc_art_idNC = $ret->success;
+            // }
             $choice->insert();
         } catch (\Exception $e) {
             $app->flashNow('info', "Une erreur est survenu, la création du choix à échoué. => {$e->getMessage()}");
@@ -616,7 +616,7 @@ $app->get('/cron', function() use($app, $payutcClient, $admin) {
 
 $app->get('/callback', function() use($app, $payutcClient, $admin) {
     $payutcClient = getPayutcClient("WEBSALE");
-    $options = Option::getAll();
+    $options = Option::getAll(null, null, null, 'W');
     foreach($options as $opt) {
         if($opt->status == 'W') {
             $desc = new Desc($opt->fk_desc_id);
@@ -624,7 +624,8 @@ $app->get('/callback', function() use($app, $payutcClient, $admin) {
             $opt->checkStatus($payutcClient, $funId);
         }
     }
-    $app->redirect('index');
+    if ($_GET['url']) $app->redirect($_GET['url']);
+    else $app->redirect('index');
 });
 
 $app->run();

@@ -187,7 +187,7 @@ class Option {
     /*
         Return all
     */
-    public static function getAll($desc_id = null, $choice_id = null, $tra_id = null) {
+    public static function getAll($desc_id = null, $choice_id = null, $tra_id = null, $option_status=null) {
         $qb = self::getQbBase();
         if($desc_id) {
             $qb->andWhere('o.fk_desc_id = :desc_id')
@@ -200,6 +200,10 @@ class Option {
         if($tra_id) {
             $qb->andWhere('o.payutc_tra_id = :tra_id')
                 ->setParameter('tra_id', $tra_id);
+        }
+        if($option_status) {
+            $qb->andWhere('o.option_status = :option_status')
+                ->setParameter('option_status', $option_status);
         }
         $ret = Array();
         foreach($qb->execute()->fetchAll() as $data) {
@@ -228,7 +232,7 @@ class Option {
         $this->date_paiement = $data["option_date_paiement"];
         $this->status = $data["option_status"];
         $this->choice_name = $data["choice_name"];
-        $this->choice_price = ($this->user_cotisant)?$data["choice_priceC"]:$data["choice_priceNC"];
+        $this->choice_price = $data["choice_priceC"];//($this->user_cotisant)?$data["choice_priceC"]:$data["choice_priceNC"];
     }
 
     /*

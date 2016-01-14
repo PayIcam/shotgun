@@ -52,7 +52,7 @@ class Choice {
         $form->submit = $submit;
         $form->addItem(new Field("Nom", "name", $this->name, "Nom du choix"));
         $form->addItem(new Field("Prix cotisant", "priceC", $this->priceC, "Prix du choix pour les cotisants BDE", "euro"));
-        $form->addItem(new Field("Prix non cotisant", "priceNC", $this->priceNC, "Prix du choix pour les non cotisants BDE", "euro"));
+        // $form->addItem(new Field("Prix non cotisant", "priceNC", $this->priceNC, "Prix du choix pour les non cotisants BDE", "euro"));
         $form->addItem(new Field("Stock", "stock", $this->stock, "Nombre de place", "number"));
         return $form;
     }
@@ -110,11 +110,11 @@ class Choice {
             array(
                 "choice_name" => $this->name,
                 "choice_priceC" => $this->priceC,
-                "choice_priceNC" => $this->priceNC,
+                // "choice_priceNC" => $this->priceNC,
                 "choice_stock" => $this->stock,
                 "fk_desc_id" => $this->descId,
                 "payutc_art_idC" => $this->payutc_art_idC,
-                "payutc_art_idNC" => $this->payutc_art_idNC,
+                // "payutc_art_idNC" => $this->payutc_art_idNC,
             ));
         return $conn->lastInsertId();
     }
@@ -149,7 +149,7 @@ class Choice {
             ->setParameter('name', $this->name)
             ->set('c.choice_priceC', ':priceC')
             ->setParameter('priceC', $this->priceC)
-            ->set('c.choice_priceNC', ':priceNC')
+            // ->set('c.choice_priceNC', ':priceNC')
             ->setParameter('priceNC', $this->priceNC)
             ->set('c.choice_stock', ':stock')
             ->setParameter('stock', $this->stock);
@@ -215,18 +215,18 @@ class Choice {
 
         // Let's play !
         // cotisation
-        if($user->is_cotisant != 1) {
-            $art_id = $this->payutc_art_idNC;
-        } else {
+        // if($user->is_cotisant != 1) {
+        //     $art_id = $this->payutc_art_idNC;
+        // } else {
             $art_id = $this->payutc_art_idC;
-        }
+        // }
 
         $vente = $payutcClient->createTransaction(array(
             "items" => json_encode(array(array($art_id, 1))),
             "fun_id" => $desc->payutc_fun_id,
             "mail" => $user->mail,
-            "return_url" => Config::get("self_url")."shotgun?id=".$desc->id,
-            "callback_url" => Config::get("self_url")."callback"
+            "return_url" => Config::get("self_url")."shotgun?id=".$desc->id, // En fait ça passe pq shotgun regarde lui mm si le status de la transaction est tjs à W si elle n'a pas été mise à jour
+            "callback_url" => Config::get("self_url")."callback" // N'est même pas utilisé pour le moment ...
         ));
 
         $opt = new Option();
@@ -253,11 +253,11 @@ class Choice {
         $this->id = $data["choice_id"];
         $this->name = $data["choice_name"];
         $this->priceC = $data["choice_priceC"];
-        $this->priceNC = $data["choice_priceNC"];
+        // $this->priceNC = $data["choice_priceNC"];
         $this->stock = $data["choice_stock"];
         $this->descId = $data["fk_desc_id"];
         $this->payutc_art_idC = $data["payutc_art_idC"];
-        $this->payutc_art_idNC = $data["payutc_art_idNC"];
+        // $this->payutc_art_idNC = $data["payutc_art_idNC"];
     }
 
     /*
@@ -268,14 +268,14 @@ class Choice {
               `choice_id` int(4) NOT NULL AUTO_INCREMENT,
               `choice_name` varchar(50) NOT NULL,
               `choice_priceC` int(5) NOT NULL,
-              `choice_priceNC` int(5) NOT NULL,
               `choice_stock` int(5) NOT NULL,
               `fk_desc_id` int(4) NOT NULL,
               `payutc_art_idC` int(11) NOT NULL,
-              `payutc_art_idNC` int(11) NOT NULL,
               PRIMARY KEY (`choice_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 ";
+              // `choice_priceNC` int(5) NOT NULL,
+              // `payutc_art_idNC` int(11) NOT NULL,
         return $query;
     }
 
