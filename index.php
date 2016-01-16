@@ -105,11 +105,13 @@ $app->get('/', function() use($app, $isAdminFondation) {
     $app->redirect('index');
 });
 $app->get('/index', function() use($app, $isAdminFondation) {
+    $gingerClient = new GingerClient(Config::get('ginger_key'), Config::get('ginger_server'));
     $app->render('header.php', array(
         "active" => "index"
         ));
     $app->render('index.php', array(
-        "shotguns" => Desc::getAll()
+        "shotguns" => Desc::getAll(),
+        "user" => isset($_SESSION['username']) ? $gingerClient->getUser($_SESSION["username"]) : null
         ));
     $app->render('footer.php', array('isAdminFondation'=>$isAdminFondation));
 });

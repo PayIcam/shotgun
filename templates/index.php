@@ -7,7 +7,8 @@
 <div class="row marketing">
 <div class="col-lg-12">
   <?php $i = 0; foreach($shotguns as $shotgun): 
-  	if($shotgun->is_public != 1) { continue; }
+    if($shotgun->is_public != 1) { continue; }
+  	if(!in_array('all', $shotgun->public_cible) && (!empty($user) && !in_array($user->promo, $shotgun->public_cible)) ) { echo "<p>on cache".$shotgun->titre." pq vous n'êtes pas dans lu public cible:".json_encode($shotgun->public_cible)."</p>"; continue; }
    ?>
   <h4><?php echo $shotgun->titre; ?></h4>
   <?php echo $shotgun->desc; ?>

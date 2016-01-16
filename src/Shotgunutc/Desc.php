@@ -23,6 +23,7 @@ use \Shotgunutc\Db;
 use \Shotgunutc\Config;
 use \Shotgunutc\Form;
 use \Shotgunutc\Field;
+use \Shotgunutc\Select;
 use \Shotgunutc\BoolField;
 use \Shotgunutc\TextareaField;
 use \Ginger\Client\GingerClient;
@@ -40,6 +41,7 @@ class Desc {
     public $quota;
     public $debut;
     public $fin;
+    public $public_cible;
     public $payutc_fun_id;
     public $payutc_cat_id;
 
@@ -57,16 +59,25 @@ class Desc {
     }
 
     public function getForm($title, $action, $submit) {
+        $promos = array(
+            'all'            =>'Tout le monde qui a un mail icam.fr',
+            'Intégrés'             =>array(116=>116,117=>117,118=>118,119=>119,120=>120),
+            'Apprentissage'            =>array(2016=>2016,2017=>2017,2018=>2018,2019=>2019,2020=>2020),
+            'Permanent'            =>'Permanent (@icam.fr)',
+            'Ingenieur'            =>'Tous les Ingénieur (@promo.icam.fr)',
+            'Dernières promo sorties' => array(115=>115, 114=>114, 113=>113)
+        );
+
         $form = new Form();
         $form->title = $title;
         $form->action = $action;
         $form->submit = $submit;
-        $form->addItem(new Field("Titre", "titre", $this->titre, "Titre du shotgun"));
         $form->addItem(new TextareaField("Description", "desc", $this->desc, "Description du shotgun"));
         $form->addItem(new BoolField("Evenement public", "is_public", $this->is_public, "Indique si l'événement est publiquement afficher sur le site de shotgunutc."));
         $form->addItem(new Field("Nombre max de places", "quota", $this->quota, "Combien de ventes au maximum ?", "number"));
         $form->addItem(new Field("Debut", "debut", $this->debut, "Debut du shotgun", "datetime"));
         $form->addItem(new Field("Fin", "fin", $this->fin, "Fin du shotgun", "datetime"));
+        $form->addItem(new Select("Public visé", "public_cible", $this->public_cible, $promos, "Public cible visé: quelles promos ont le droit de voir l'event"));
         return $form;
     }
 
@@ -96,6 +107,7 @@ class Desc {
                 "desc_quota" => $this->quota,
                 "desc_debut" => $this->debut,
                 "desc_fin" => $this->fin,
+                "desc_public_cible" => json_encode($this->public_cible),
                 "payutc_fun_id" => $this->payutc_fun_id, 
                 "payutc_cat_id" => $this->payutc_cat_id
             ));
@@ -121,6 +133,8 @@ class Desc {
             ->setParameter('debut', $this->debut)
             ->set('d.desc_fin', ':fin')
             ->setParameter('fin', $this->fin)
+            ->set('d.desc_public_cible', ':public_cible')
+            ->setParameter('public_cible', json_encode($this->public_cible))
             ->where('desc_id = :desc_id')
             ->setParameter('desc_id', $this->id);
         $qb->execute();
@@ -200,6 +214,7 @@ class Desc {
         $this->quota = $data["desc_quota"];
         $this->debut = $data["desc_debut"];
         $this->fin = $data["desc_fin"];
+        $this->public_cible = json_decode($data["desc_public_cible"]);
         $this->payutc_fun_id = $data["payutc_fun_id"];
         $this->payutc_cat_id = $data["payutc_cat_id"];
     }
@@ -216,6 +231,7 @@ class Desc {
               `desc_quota` int(10) NOT NULL,
               `desc_debut` datetime NOT NULL,
               `desc_fin` datetime NOT NULL,
+              `desc_public_cible` text NOT NULL,
               `payutc_fun_id` int(4) NOT NULL,
               `payutc_cat_id` int(4) NOT NULL,
               PRIMARY KEY (`desc_id`)
