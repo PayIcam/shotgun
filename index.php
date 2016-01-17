@@ -75,6 +75,7 @@ $payutcClient = getPayutcClient("WEBSALE");
 
 $admin = $payutcClient->isSuperAdmin();
 $isAdminFondation = $payutcClient->isAdmin();
+$status = $payutcClient->getStatus();
 
 $app = new \Slim\Slim();
 
@@ -84,10 +85,12 @@ $app->hook('slim.before', function () use ($app, $payutcClient, $admin) {
         $app->flashNow('info', 'This application is not yet configured, please click <a href="install" >here</a> !');
     }
 
-    $status = $payutcClient->getStatus();
+    global $status;
     if((!isset($status) || !$status->user) && $app->request->getResourceUri() != '/about' && $app->request->getResourceUri() != '/login') {
         $app->flash('info', "Vous devez être connecté pour accéder au reste de l'application");
         $app->redirect('about');
+    }else{
+        $_SESSION['username'] = $status->user;
     }
 });
 
