@@ -128,18 +128,23 @@ $app->get('/about', function() use($app, $isAdminFondation) {
 // Show a specific shotgun page
 $app->get('/shotgun', function() use($app, $isAdminFondation) {
     $gingerClient = new GingerClient(Config::get('ginger_key'), Config::get('ginger_server'));
+    $user = isset($_SESSION['username']) ? $gingerClient->getUser($_SESSION["username"]) : null;
     if(!isset($_GET["id"])) {
         $app->redirect("index");
     } else {
         $id = $_GET["id"];
     } 
-    $desc = new Desc();
-    $desc->select($id);
+    $shotgun = new Desc();
+    $shotgun->select($id);
+    if(!in_array('all', $shotgun->public_cible) && (!empty($user) && !in_array($user->promo, $shotgun->public_cible)) ) {
+        $app->flash("info", "Vous ne faites pas partie du public cible de ce shotgun.");
+        $app->redirect("index");
+    }
     $app->render('header.php', array());
     $app->render('shotgun.php', array(
-        "desc" => $desc,
+        "desc" => $shotgun,
         "username" => isset($_SESSION['username']) ? $_SESSION['username'] : null,
-        "user" => isset($_SESSION['username']) ? $gingerClient->getUser($_SESSION["username"]) : null,
+        "user" => $user,
         "payutcClient" => getPayutcClient("WEBSALE")));
     $app->render('footer.php', array('isAdminFondation'=>$isAdminFondation));
 });
