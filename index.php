@@ -86,11 +86,23 @@ $app->hook('slim.before', function () use ($app, $payutcClient, $admin) {
     }
 
     global $status;
-    if((!isset($status) || !$status->user) && $app->request->getResourceUri() != '/about' && $app->request->getResourceUri() != '/login') {
-        $app->flash('info', "Vous devez être connecté pour accéder au reste de l'application");
-        $app->redirect('about');
-    }else{
-        $_SESSION['username'] = $status->user;
+    if (!in_array($app->request->getResourceUri(), ['/about', '/login'])) {
+        if((!isset($status) || empty($status->user))) {
+            // Il n'était pas encore connecté en tant qu'icam.
+            $app->flash('info', "Vous devez être connecté pour accéder au reste de l'application");
+            $app->redirect('about');
+        }else if(!empty($status->user) && isset($status->application->app_url) && strpos($status->application->app_url, 'shotgun') === false){ // il était connecté en tant qu'icam mais l'appli non
+            try {
+                $result = $payutcClient->loginApp(array("key"=>Config::get('payutc_key')));
+                $status = $payutcClient->getStatus();
+            } catch (\JsonClient\JsonException $e) {
+                $app->flashNow('info', "error login application, veuillez finir l'installation de Shotgun");
+                $app->redirect('install');
+            }
+        }
+        if (!empty($status->user)){
+            $_SESSION['username'] = $status->user;
+        }
     }
 });
 
@@ -525,7 +537,6 @@ $app->get('/login', function() use($app, $payutcClient) {
         }
         $status = $payutcClient->getStatus();
 
-        $_SESSION['sessionid'] = '';
         $_SESSION['username'] = $status->user;
         $_SESSION['payutc_cookie'] = $payutcClient->cookie;
         $app->response->redirect(isset($_GET['goto']) ? $_GET['goto'] : "index", 303);
