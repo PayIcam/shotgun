@@ -72,6 +72,7 @@ class Desc {
         $form->title = $title;
         $form->action = $action;
         $form->submit = $submit;
+        $form->addItem(new Field("Titre", "titre", $this->titre, "Titre du shotgun"));
         $form->addItem(new TextareaField("Description", "desc", $this->desc, "Description du shotgun"));
         $form->addItem(new BoolField("Evenement public", "is_public", $this->is_public, "Indique si l'événement est publiquement afficher sur le site de shotgunutc."));
         $form->addItem(new Field("Nombre max de places", "quota", $this->quota, "Combien de ventes au maximum ?", "number"));
