@@ -549,15 +549,13 @@ $app->get('/logout', function() use($app, $payutcClient) {
     if($status->user) {
         $payutcClient->logout();
     }
+    $redirect_url = isset($_GET['goto']) ? $_GET['goto'] : "index";
     if(isset($_SESSION['username']) || $status->user) {
         $service = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}"; 
-        $casUrl = $payutcClient->getCasUrl()."logout?url=".urlencode($service);
-        session_destroy();
-        $app->response->redirect($casUrl, 303);    
-    } else {
-        session_destroy();
-        $app->response->redirect(isset($_GET['goto']) ? $_GET['goto'] : "index", 303);
+        $redirect_url = $payutcClient->getCasUrl()."logout?url=".urlencode($service);
     }
+    session_destroy();
+    $app->response->redirect($redirect_url, 303);
 });
 
 /*

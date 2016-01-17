@@ -6,9 +6,11 @@
     <br>Ceux-ci nécessitent qu'un utilisateur n'achète qu'une et une seule place.</p>
     <p>Le projet est open-source et accepte très volontiers les suggestions sous formes "d'issues" ou de "pull-request" sur <a href="https://github.com/PayIcam/shotgunutc" >github</a>.<br>
     ShotgunUTC a été créé par <a href="https://github.com/mattgu74/shotgunutc">Matthieu Guffroy</a> pour l'UTC de Compiègne.<br>Le projet a été adapté par Antoine Giraud (115) pour les besoins de PayIcam pour le site de Lille.</p>
-    <h2>Connectez vous !</h2>
-    <p>Vous avez besoin de vous authentifier pour accéder au reste du site:</p>
-    <p><a href="login" class="btn btn-primary">Connexion</a></p>
+    <?php if (!isset($_SESSION['username'])): ?>
+        <h2>Connectez vous !</h2>
+        <p>Vous avez besoin de vous authentifier pour accéder au reste du site:</p>
+        <p><a href="login" class="btn btn-primary">Connexion</a></p>
+    <?php endif ?>
     <br>
   </div>
 </div>
