@@ -91,7 +91,7 @@ $app->hook('slim.before', function () use ($app, $payutcClient, $admin) {
             // Il n'était pas encore connecté en tant qu'icam.
             $app->flash('info', "Vous devez être connecté pour accéder au reste de l'application");
             $app->redirect('about');
-        }else if(!empty($status->user) && isset($status->application->app_url) && strpos($status->application->app_url, 'shotgun') === false){ // il était connecté en tant qu'icam mais l'appli non
+        }else if(!empty($status->user) && (empty($status->application) || isset($status->application->app_url) && strpos($status->application->app_url, 'shotgun') === false)){ // il était connecté en tant qu'icam mais l'appli non
             try {
                 $result = $payutcClient->loginApp(array("key"=>Config::get('payutc_key')));
                 $status = $payutcClient->getStatus();
