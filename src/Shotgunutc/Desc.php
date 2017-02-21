@@ -61,8 +61,8 @@ class Desc {
     public function getForm($title, $action, $submit) {
         $promos = array(
             'all'            =>'Tout le monde qui a un mail icam.fr',
-            'Intégrés'             =>array(116=>116,117=>117,118=>118,119=>119,120=>120),
-            'Apprentissage'            =>array(2016=>2016,2017=>2017,2018=>2018,2019=>2019,2020=>2020),
+            'Intégrés'             =>array(116=>116,117=>117,118=>118,119=>119,120=>120,121=>121),
+            'Apprentissage'            =>array(2016=>2016,2017=>2017,2018=>2018,2019=>2019,2020=>2020,2021=>2021),
             'Permanent'            =>'Permanent (@icam.fr)',
             'Ingenieur'            =>'Tous les Ingénieur (@promo.icam.fr)',
             'Dernières promo sorties' => array(115=>115, 114=>114, 113=>113)
