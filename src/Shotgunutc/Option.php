@@ -104,7 +104,11 @@ class Option {
     }
 
     public function checkStatus($payutcClient, $funId) {
-        $transaction = $payutcClient->getTransactionInfo(array("fun_id" => $funId, "tra_id" => $this->payutc_tra_id));
+        try {
+            $transaction = $payutcClient->getTransactionInfo(array("fun_id" => $funId, "tra_id" => $this->payutc_tra_id));
+	} catch(\Exception $e) {
+              return false;
+        }
         if($transaction->status != $this->status) {
             $this->date_paiement = date("Y-m-d H:i:s");
             $this->status = $transaction->status;

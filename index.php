@@ -1,4 +1,5 @@
 <?php
+
 /*
  * ----------------------------------------------------------------------------
  * "THE BEER-WARE LICENSE" (Revision 42):
@@ -643,7 +644,7 @@ $app->get('/callback', function() use($app, $payutcClient, $admin) {
             $opt->checkStatus($payutcClient, $funId);
         }
     }
-    if ($_GET['url']) $app->redirect($_GET['url']);
+    if (isset($_GET['url'])) $app->redirect($_GET['url']);
     else $app->redirect('index');
 });
 
