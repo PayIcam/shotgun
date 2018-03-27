@@ -149,7 +149,7 @@ $app->get('/shotgun', function() use($app, $isAdminFondation) {
         $app->redirect("index");
     } else {
         $id = $_GET["id"];
-    }
+    } 
     $shotgun = new Desc();
     $shotgun->select($id);
     if(!in_array('all', $shotgun->public_cible) && (!empty($user) && !in_array($user->promo, $shotgun->public_cible)) ) {
@@ -175,7 +175,7 @@ $app->get('/makeshotgun', function() use($app) {
     } else {
         $id = $_GET["id"];
         $choice_id = $_GET["choice_id"];
-    }
+    } 
     $choice = new Choice();
     $choice->select($choice_id);
     if($choice->descId != $id) {
@@ -200,15 +200,12 @@ $app->get('/cancel', function() use($app) {
         $app->redirect("index");
     } else {
         $id = $_GET["id"];
-    }
+    } 
     $options = Option::getUser($_SESSION["username"], $id);
     if(count($options) > 0) {
         $option = $options[0];
-        if($option->status == 'W')
-        {
-            $option->status = 'A';
-            $option->update();
-        }
+        $option->status = 'A';
+        $option->update();
     }
     $app->redirect("shotgun?id=".$id);
 });
@@ -224,7 +221,7 @@ $app->get('/shotgunform', function() use($app, $admin, $isAdminFondation) {
         $app->redirect("admin");
     } else {
         $fun_id = $_GET["fun_id"];
-    }
+    }  
     try {
         // $payutcClient->checkRight(array("user">true, "app"=>false, "fun_check"=>true, "fun_id"=>$fun_id));
         checkRight($payutcClient, true, false, true, $fun_id);
@@ -253,7 +250,7 @@ $app->post('/shotgunform', function() use($app, $admin, $isAdminFondation) {
         $app->redirect("admin");
     } else {
         $fun_id = $_GET["fun_id"];
-    }
+    }  
     try {
         // $payutcClient->checkRight(array("user">true, "app"=>false, "fun_check"=>true, "fun_id"=>$fun_id));
         checkRight($payutcClient, true, false, true, $fun_id);
@@ -274,8 +271,8 @@ $app->post('/shotgunform', function() use($app, $admin, $isAdminFondation) {
         try {
             // Création de la catégorie dans payutc (celle ou on rentrera les articles)
             $ret = $payutcClient->setCategory(array(
-                "name" => $desc->titre,
-                "parent_id" => null,
+                "name" => $desc->titre, 
+                "parent_id" => null, 
                 "fun_id" => $fun_id));
             if(isset($ret->success)) {
                 $desc->payutc_fun_id = $fun_id;
@@ -379,7 +376,7 @@ $app->post('/choiceform', function() use($app, $admin, $isAdminFondation) {
         $app->redirect("admin");
     } else {
         $id = $_GET["id"];
-    }
+    }  
     $desc = new Desc();
     $desc->select($id);
     try {
@@ -399,7 +396,7 @@ $app->post('/choiceform', function() use($app, $admin, $isAdminFondation) {
         // article cotisant
         $payutcClient->setProduct(array(
                 "obj_id" => $choice->payutc_art_idC,
-                "name" => $desc->titre." ".$choice->name,
+                "name" => $desc->titre." ".$choice->name, 
                 "parent" =>  $desc->payutc_cat_id,
                 "prix" => $choice->priceC,
                 "stock" => $choice->stock,
@@ -411,7 +408,7 @@ $app->post('/choiceform', function() use($app, $admin, $isAdminFondation) {
         // article non cotisant
         // $payutcClient->setProduct(array(
         //         "obj_id" => $choice->payutc_art_idNC,
-        //         "name" => $desc->titre." ".$choice->name,
+        //         "name" => $desc->titre." ".$choice->name, 
         //         "parent" =>  $desc->payutc_cat_id,
         //         "prix" => $choice->priceNC,
         //         "stock" => $choice->stock,
@@ -427,7 +424,7 @@ $app->post('/choiceform', function() use($app, $admin, $isAdminFondation) {
         try {
             // Création de l'article cotisant dans payutc
             $ret = $payutcClient->setProduct(array(
-                "name" => $desc->titre." ".$choice->name,
+                "name" => $desc->titre." ".$choice->name, 
                 "parent" =>  $desc->payutc_cat_id,
                 "prix" => $choice->priceC,
                 "stock" => $choice->stock,
@@ -440,7 +437,7 @@ $app->post('/choiceform', function() use($app, $admin, $isAdminFondation) {
             }
             // Création de l'article non cotisant dans payutc
             // $ret = $payutcClient->setProduct(array(
-            //     "name" => $desc->titre." ".$choice->name,
+            //     "name" => $desc->titre." ".$choice->name, 
             //     "parent" =>  $desc->payutc_cat_id,
             //     "prix" => $choice->priceNC,
             //     "stock" => $choice->stock,
@@ -499,7 +496,7 @@ $app->get('/admin', function() use($app, $admin, $isAdminFondation) {
 // Connection standard (not payutc)
 $app->get('/login_not_payicam', function() use($app, $payutcClient) {
     if(empty($_GET["ticket"])) {
-        $service = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+        $service = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}"; 
         $_SESSION['service'] = $service;
         $casUrl = $payutcClient->getCasUrl()."login?service=".urlencode($service);
         $app->response->redirect($casUrl, 303);
@@ -508,7 +505,7 @@ $app->get('/login_not_payicam', function() use($app, $payutcClient) {
         $user = $cas->authenticate($_GET["ticket"], $_SESSION['service']);
         $_SESSION['payutc_cookie'] = $payutcClient->cookie;
         try {
-            $result = $payutcClient->loginApp(array("key"=>Config::get('payutc_key')));
+            $result = $payutcClient->loginApp(array("key"=>Config::get('payutc_key')));     
         } catch (\JsonClient\JsonException $e) { die("error login application."); }
         $status = $payutcClient->getStatus();
 
@@ -520,7 +517,7 @@ $app->get('/login_not_payicam', function() use($app, $payutcClient) {
 // Connection via payutc
 $app->get('/login', function() use($app, $payutcClient) {
     if(empty($_GET["ticket"])) {
-        $service = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+        $service = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}"; 
         $_SESSION['service'] = $service;
         $casUrl = $payutcClient->getCasUrl()."login?service=".urlencode($service);
         $app->response->redirect($casUrl, 303);
@@ -534,7 +531,7 @@ $app->get('/login', function() use($app, $payutcClient) {
             }
         }
         try {
-            $result = $payutcClient->loginApp(array("key"=>Config::get('payutc_key')));
+            $result = $payutcClient->loginApp(array("key"=>Config::get('payutc_key')));     
         } catch (\JsonClient\JsonException $e) {
             $app->flashNow('info', "error login application, veuillez finir l'installation de Shotgun");
             $_GET['goto'] = 'install';
@@ -555,7 +552,7 @@ $app->get('/logout', function() use($app, $payutcClient) {
     }
     $redirect_url = isset($_GET['goto']) ? $_GET['goto'] : "index";
     if(isset($_SESSION['username']) || $status->user) {
-        $service = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+        $service = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}"; 
         $redirect_url = $payutcClient->getCasUrl()."logout?url=".urlencode($service);
     }
     session_destroy();
@@ -615,8 +612,8 @@ $app->get('/installpayutc', function() use($app, $payutcClient, $admin) {
     if($admin) {
         $appli = $payutcClient->registerApplication(
             array(
-                "app_url"  =>Config::get('self_url'),
-                "app_name" =>Config::get('title')." déclaré par {$_SESSION['username']}",
+                "app_url"  =>Config::get('self_url'), 
+                "app_name" =>Config::get('title')." déclaré par {$_SESSION['username']}", 
                 "app_desc" =>"Microbilletterie"));
         Config::set('payutc_key', $appli->app_key);
     }
