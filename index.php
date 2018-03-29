@@ -202,10 +202,14 @@ $app->get('/cancel', function() use($app) {
         $id = $_GET["id"];
     }
     $options = Option::getUser($_SESSION["username"], $id);
-    if(count($options) > 0) {
+    if(count($options) > 0)
+    {
         $option = $options[0];
-        $option->status = 'A';
-        $option->update();
+        if($option->status == 'W')
+        {
+            $option->status = 'A';
+            $option->update();
+        }
     }
     $app->redirect("shotgun?id=".$id);
 });
@@ -232,6 +236,14 @@ $app->get('/shotgunform', function() use($app, $admin, $isAdminFondation) {
     if(isset($_GET["desc_id"])) {
         $desc_id = $_GET["desc_id"];
         $desc = new Desc($desc_id);
+
+        if($desc->payutc_fun_id != $fun_id)
+        {
+            $app->flash("info", "Arrète de jouer avec les url...");
+            $app->redirect("admin");
+            die();
+        }
+
         $form = $desc->getForm("Modification d'un shotgun", "shotgunform?fun_id=".$fun_id."&desc_id=".$desc_id, "Modifier");
     } else {
         $desc = new Desc();
