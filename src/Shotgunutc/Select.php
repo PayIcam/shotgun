@@ -44,7 +44,7 @@ class Select {
         <div class="form-group">
             <label for="'.$this->field_name.'">'.$this->label.'</label>
             <div class="controls">
-            <select name="'.$this->field_name.'[]" id="'.$this->field_name.'" class="" multiple="multiple" style="height:200px;">';
+            <select required name="'.$this->field_name.'[]" id="'.$this->field_name.'" class="" multiple="multiple" style="height:200px;">';
                 foreach ($this->options as $k => $v) {
                     if (is_array($v)) {
                         $renduHtml .= '<optgroup label="'.$k.'">';
