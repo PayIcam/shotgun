@@ -52,7 +52,7 @@ class Field {
                 <label for="'.$this->field_name.'">'.$this->label.'</label>
                     '.$this->explanation.'
                 <div class="controls">
-                    <input type="'.$type.'" class="form-control" name="'.$this->field_name.'" value="'.$value.'" '.$more.'>                    
+                    <input required type="'.$type.'" class="form-control" name="'.$this->field_name.'" value="'.$value.'" '.$more.'>
                 </div>
             </div>';
     }
