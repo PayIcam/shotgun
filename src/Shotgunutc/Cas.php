@@ -1,13 +1,4 @@
 <?php
-/*
- * ----------------------------------------------------------------------------
- * "THE BEER-WARE LICENSE" (Revision 42):
- * <matthieu@guffroy.com> wrote this file. As long as you retain this notice you
- * can do whatever you want with this stuff. If we meet some day, and you think
- * this stuff is worth it, you can buy me a beer in return Matthieu Guffroy
- * ----------------------------------------------------------------------------
- */
-
  /*
  * ----------------------------------------------------------------------------
  * "LICENCE BEERWARE" (Révision 42):
@@ -22,24 +13,22 @@ namespace Shotgunutc;
 use \SimpleXMLElement;
 use \Httpful\Request;
 
-class Cas
-{
+class Cas {
     protected $url;
     protected $timeout;
     
-    public function __construct($url, $timeout=10)
-    {
+    public function __construct($url, $timeout=10) {
         $this->url = $url;
         $this->timeout = $timeout;
     }
     
-    public function authenticate($ticket, $service)
-    {
+    public function authenticate($ticket, $service) {
         $r = Request::get($this->getValidateUrl($ticket, $service))
           ->sendsXml()
           ->timeoutIn($this->timeout)
           ->send();
-        $r->body = str_replace("\n", "", $r->body);
+        $user = trim(str_replace("\n", "", $r->raw_body));
+        /*
         try {
             $xml = new SimpleXMLElement($r->body);
         }
@@ -51,19 +40,17 @@ class Cas
         
         $serviceResponse = $xml->children($namespaces['cas']);
         $user = $serviceResponse->authenticationSuccess->user;
-        
+        //*/
         if ($user) {
             return (string)$user; // cast simplexmlelement to string
-        }
-        else {
+        } else { /*
             $authFailed = $serviceResponse->authenticationFailure;
             if ($authFailed) {
                 $attributes = $authFailed->attributes();
                 throw new \Exception((string)$attributes['code']);
-            }
-            else {
-                throw new \Exception($r->body." service:".$service);
-            }
+            } else { //*/
+                throw new \Exception($user." service:".$service);
+            // }
         }
         // never reach there
     }
