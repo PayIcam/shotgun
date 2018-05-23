@@ -26,37 +26,29 @@ class Cas {
         $r = Request::get($this->getValidateUrl($ticket, $service))
           ->sendsXml()
           ->timeoutIn($this->timeout)
-          ->send();
-        $user = trim(str_replace("\n", "", $r->raw_body));
-        /*
+          ->send();$user = trim(str_replace("\n", "", $r->raw_body));
+        // Log::warning("AuthenticationFailure : ($ticket, $service)".$r->raw_body."\n".$r->body);
         try {
-            $xml = new SimpleXMLElement($r->body);
-        }
-        catch (\Exception $e) {
-            throw new \UnexpectedValueException("Return cannot be parsed : '{$r->body}'");
-        }
-        
-        $namespaces = $xml->getNamespaces();
-        
-        $serviceResponse = $xml->children($namespaces['cas']);
-        $user = $serviceResponse->authenticationSuccess->user;
-        //*/
-        if ($user) {
-            return (string)$user; // cast simplexmlelement to string
-        } else { /*
+            $xml = new SimpleXMLElement(trim(str_replace("\n", "", $r->raw_body)));
+            $namespaces = $xml->getNamespaces();
+            $serviceResponse = $xml->children($namespaces['cas']);
+            $user = $serviceResponse->authenticationSuccess->user;
             $authFailed = $serviceResponse->authenticationFailure;
             if ($authFailed) {
                 $attributes = $authFailed->attributes();
-                throw new \Exception((string)$attributes['code']);
-            } else { //*/
-                throw new \Exception($user." service:".$service);
-            // }
+                throw new AuthenticationFailure((string)$attributes['code']);
+            }
+        } catch (\Exception $e) {
+            $user = trim(str_replace("\n", "", $r->raw_body));
         }
-        // never reach there
+        if ($user) {
+            return (string)$user; // cast simplexmlelement to string
+        } else {
+            throw new \UnexpectedValueException($user);
+        }
     }
     
-    public function getValidateUrl($ticket, $service)
-    {
+    public function getValidateUrl($ticket, $service) {
         return $this->url."serviceValidate?ticket=".urlencode($ticket)."&service=".urlencode($service);
     }
 }
