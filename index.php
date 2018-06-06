@@ -409,6 +409,7 @@ $app->post('/choiceform', function() use($app, $admin, $isAdminFondation) {
         $payutcClient->setProduct(array(
                 "obj_id" => $choice->payutc_art_idC,
                 "name" => $desc->titre." ".$choice->name,
+                "service" => "Shotgun",
                 "parent" =>  $desc->payutc_cat_id,
                 "prix" => $choice->priceC,
                 "stock" => $choice->stock,
@@ -421,6 +422,7 @@ $app->post('/choiceform', function() use($app, $admin, $isAdminFondation) {
         // $payutcClient->setProduct(array(
         //         "obj_id" => $choice->payutc_art_idNC,
         //         "name" => $desc->titre." ".$choice->name,
+        //         "service" => "Shotgun",
         //         "parent" =>  $desc->payutc_cat_id,
         //         "prix" => $choice->priceNC,
         //         "stock" => $choice->stock,
@@ -437,6 +439,7 @@ $app->post('/choiceform', function() use($app, $admin, $isAdminFondation) {
             // Création de l'article cotisant dans payutc
             $ret = $payutcClient->setProduct(array(
                 "name" => $desc->titre." ".$choice->name,
+                "service" => "Shotgun",
                 "parent" =>  $desc->payutc_cat_id,
                 "prix" => $choice->priceC,
                 "stock" => $choice->stock,
@@ -450,6 +453,7 @@ $app->post('/choiceform', function() use($app, $admin, $isAdminFondation) {
             // Création de l'article non cotisant dans payutc
             // $ret = $payutcClient->setProduct(array(
             //     "name" => $desc->titre." ".$choice->name,
+            //     "service" => "Shotgun",
             //     "parent" =>  $desc->payutc_cat_id,
             //     "prix" => $choice->priceNC,
             //     "stock" => $choice->stock,
