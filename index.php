@@ -284,6 +284,7 @@ $app->post('/shotgunform', function() use($app, $admin, $isAdminFondation) {
             // Création de la catégorie dans payutc (celle ou on rentrera les articles)
             $ret = $payutcClient->setCategory(array(
                 "name" => $desc->titre,
+                "service" => "Shotgun",
                 "parent_id" => null,
                 "fun_id" => $fun_id));
             if(isset($ret->success)) {
