@@ -284,6 +284,7 @@ $app->post('/shotgunform', function() use($app, $admin, $isAdminFondation) {
             // Création de la catégorie dans payutc (celle ou on rentrera les articles)
             $ret = $payutcClient->setCategory(array(
                 "name" => $desc->titre,
+                "service" => "Shotgun",
                 "parent_id" => null,
                 "fun_id" => $fun_id));
             if(isset($ret->success)) {
@@ -409,6 +410,7 @@ $app->post('/choiceform', function() use($app, $admin, $isAdminFondation) {
         $payutcClient->setProduct(array(
                 "obj_id" => $choice->payutc_art_idC,
                 "name" => $desc->titre." ".$choice->name,
+                "service" => "Shotgun",
                 "parent" =>  $desc->payutc_cat_id,
                 "prix" => $choice->priceC,
                 "stock" => $choice->stock,
@@ -421,6 +423,7 @@ $app->post('/choiceform', function() use($app, $admin, $isAdminFondation) {
         // $payutcClient->setProduct(array(
         //         "obj_id" => $choice->payutc_art_idNC,
         //         "name" => $desc->titre." ".$choice->name,
+        //         "service" => "Shotgun",
         //         "parent" =>  $desc->payutc_cat_id,
         //         "prix" => $choice->priceNC,
         //         "stock" => $choice->stock,
@@ -437,6 +440,7 @@ $app->post('/choiceform', function() use($app, $admin, $isAdminFondation) {
             // Création de l'article cotisant dans payutc
             $ret = $payutcClient->setProduct(array(
                 "name" => $desc->titre." ".$choice->name,
+                "service" => "Shotgun",
                 "parent" =>  $desc->payutc_cat_id,
                 "prix" => $choice->priceC,
                 "stock" => $choice->stock,
@@ -450,6 +454,7 @@ $app->post('/choiceform', function() use($app, $admin, $isAdminFondation) {
             // Création de l'article non cotisant dans payutc
             // $ret = $payutcClient->setProduct(array(
             //     "name" => $desc->titre." ".$choice->name,
+            //     "service" => "Shotgun",
             //     "parent" =>  $desc->payutc_cat_id,
             //     "prix" => $choice->priceNC,
             //     "stock" => $choice->stock,
