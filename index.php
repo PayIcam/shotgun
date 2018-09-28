@@ -56,7 +56,6 @@ try {
 } catch(\Exception $e) {
     Config::$conf = Array();
     // Set the only one forced config line, that we have to change manually.
-    Config::set('payutc_server', "http://payicam.dev/server/web/");
     Config::set('proxy', '');
     Config::set('self_url', "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
     Config::set('title', "Shotgun PayIcam");
@@ -293,7 +292,7 @@ $app->post('/shotgunform', function() use($app, $admin, $isAdminFondation) {
             }
             $desc_id = $desc->insert();
         } catch (\Exception $e) {
-            $app->flashNow('info', "Une erreur est survenu, la création du shotgun à échoué. => {$e->getMessage()}");
+            $app->flashNow('info', "Une erreur est survenue, la création du shotgun à échoué. => {$e->getMessage()}");
             $app->render('header.php', array());
             $app->render('form.php', array(
                 "form" => $form
@@ -467,7 +466,7 @@ $app->post('/choiceform', function() use($app, $admin, $isAdminFondation) {
             // }
             $choice->insert();
         } catch (\Exception $e) {
-            $app->flashNow('info', "Une erreur est survenu, la création du choix à échoué. => {$e->getMessage()}");
+            $app->flashNow('info', "Une erreur est survenue, la création du choix à échoué. => {$e->getMessage()}");
             $app->render('header.php', array());
             $app->render('form.php', array(
                 "form" => $form

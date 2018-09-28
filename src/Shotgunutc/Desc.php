@@ -61,11 +61,11 @@ class Desc {
     public function getForm($title, $action, $submit) {
         $promos = array(
             'all'            =>'Tout le monde qui a un mail icam.fr',
-            'Intégrés'             =>array(116=>116,117=>117,118=>118,119=>119,120=>120,121=>121),
-            'Apprentissage'            =>array(2016=>2016,2017=>2017,2018=>2018,2019=>2019,2020=>2020,2021=>2021),
+            'Intégrés'             =>array(119=>119,120=>120,121=>121,122=>122,123=>123),
+            'Apprentissage'            =>array(2019=>2019,2020=>2020,2021=>2021,2022=>2022,2023=>2023),
             'Permanent'            =>'Permanent (@icam.fr)',
             'Ingenieur'            =>'Tous les Ingénieur (@promo.icam.fr)',
-            'Dernières promo sorties' => array(115=>115, 114=>114, 113=>113)
+            'Dernières promo sorties' => array(118=>118, 117=>117, 116=>116, 115=>115, 114=>114, 113=>113)
         );
 
         $form = new Form();
@@ -99,6 +99,7 @@ class Desc {
         if($this->id !== null) {
             throw new \Exception("Cannot insert this Desc, please use update() ! ({$this->id})");
         }
+        $this->is_public = $this->is_public ? 1:0;
         $conn = Db::conn();
         $conn->insert($this->table_name,
             array(
@@ -109,7 +110,7 @@ class Desc {
                 "desc_debut" => $this->debut,
                 "desc_fin" => $this->fin,
                 "desc_public_cible" => json_encode($this->public_cible),
-                "payutc_fun_id" => $this->payutc_fun_id, 
+                "payutc_fun_id" => $this->payutc_fun_id,
                 "payutc_cat_id" => $this->payutc_cat_id
             ));
         return $conn->lastInsertId();
