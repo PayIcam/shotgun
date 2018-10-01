@@ -63,6 +63,7 @@ class Desc {
             'all'            =>'Tout le monde qui a un mail icam.fr',
             'Intégrés'             =>array(119=>119,120=>120,121=>121,122=>122,123=>123),
             'Apprentissage'            =>array(2019=>2019,2020=>2020,2021=>2021,2022=>2022,2023=>2023),
+            'Ouvert'           =>array(24=>24),
             'Permanent'            =>'Permanent (@icam.fr)',
             'Ingenieur'            =>'Tous les Ingénieur (@promo.icam.fr)',
             'Dernières promo sorties' => array(118=>118, 117=>117, 116=>116, 115=>115, 114=>114, 113=>113)
