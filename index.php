@@ -151,7 +151,7 @@ $app->get('/shotgun', function() use($app, $isAdminFondation) {
     }
     $shotgun = new Desc();
     $shotgun->select($id);
-    if(!in_array('all', $shotgun->public_cible) && (!empty($user) && !in_array($user->promo, $shotgun->public_cible)) ) {
+    if((!in_array('all', $shotgun->public_cible) && (!empty($user) && !in_array($user->promo, $shotgun->public_cible))) || !in_array($user->site, $shotgun->site_cible)) {
         $app->flash("info", "Vous ne faites pas partie du public cible de ce shotgun.");
         $app->redirect("index");
     }

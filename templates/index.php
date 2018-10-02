@@ -6,9 +6,10 @@
 
 <div class="row marketing">
 <div class="col-lg-12">
-  <?php $shotgunAffiches=0; $i = 0; foreach($shotguns as $shotgun): 
+  <?php $shotgunAffiches=0; $i = 0; foreach($shotguns as $shotgun):
     if (($shotgun->is_public != 1)
-      || (!in_array('all', $shotgun->public_cible) && (!empty($user) && !in_array($user->promo, $shotgun->public_cible)) )){
+      || (!in_array('all', $shotgun->public_cible) && (!empty($user) && !in_array($user->promo, $shotgun->public_cible)))
+      || (!in_array($user->site, $shotgun->site_cible)) ){
         continue;
     } $shotgunAffiches += 1; ?>
   <h4><?php echo $shotgun->titre; ?></h4>

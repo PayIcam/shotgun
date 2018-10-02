@@ -24,6 +24,7 @@ use \Shotgunutc\Config;
 use \Shotgunutc\Form;
 use \Shotgunutc\Field;
 use \Shotgunutc\Select;
+use \Shotgunutc\Select_simple;
 use \Shotgunutc\BoolField;
 use \Shotgunutc\TextareaField;
 use \Ginger\Client\GingerClient;
@@ -42,6 +43,7 @@ class Desc {
     public $debut;
     public $fin;
     public $public_cible;
+    public $site_cible;
     public $payutc_fun_id;
     public $payutc_cat_id;
 
@@ -59,6 +61,11 @@ class Desc {
     }
 
     public function getForm($title, $action, $submit) {
+        // var_dump($title);
+        // var_dump($action);
+        // var_dump($submit);
+        // var_dump($this);
+        // die();
         $promos = array(
             'all'            =>'Tout le monde qui a un mail icam.fr',
             'Intégrés'             =>array(119=>119,120=>120,121=>121,122=>122,123=>123),
@@ -68,6 +75,7 @@ class Desc {
             'Ingenieur'            =>'Tous les Ingénieur (@promo.icam.fr)',
             'Dernières promo sorties' => array(118=>118, 117=>117, 116=>116, 115=>115, 114=>114, 113=>113)
         );
+        $sites = array('Lille' => 'Lille', 'Toulouse' => 'Toulouse');
 
         $form = new Form();
         $form->title = $title;
@@ -79,7 +87,8 @@ class Desc {
         $form->addItem(new Field("Nombre max de places", "quota", $this->quota, "Combien de ventes au maximum ?", "number"));
         $form->addItem(new Field("Debut", "debut", $this->debut, "Debut du shotgun", "datetime"));
         $form->addItem(new Field("Fin", "fin", $this->fin, "Fin du shotgun", "datetime"));
-        $form->addItem(new Select("Public visé", "public_cible", $this->public_cible, $promos, "Public cible visé: quelles promos ont le droit de voir l'event"));
+        $form->addItem(new Select("Promos visé", "public_cible", $this->public_cible, $promos, "Public cible visé: quelles promos ont le droit de voir l'event"));
+        $form->addItem(new Select_simple("Site visé", "site_cible", $this->site_cible, $sites, "Sites visés: quels sites ont le droit de voir l'event"));
         return $form;
     }
 
@@ -111,6 +120,7 @@ class Desc {
                 "desc_debut" => $this->debut,
                 "desc_fin" => $this->fin,
                 "desc_public_cible" => json_encode($this->public_cible),
+                "desc_site_cible" => json_encode($this->site_cible),
                 "payutc_fun_id" => $this->payutc_fun_id,
                 "payutc_cat_id" => $this->payutc_cat_id
             ));
@@ -138,6 +148,8 @@ class Desc {
             ->setParameter('fin', $this->fin)
             ->set('d.desc_public_cible', ':public_cible')
             ->setParameter('public_cible', json_encode($this->public_cible))
+            ->set('d.desc_site_cible', ':site_cible')
+            ->setParameter('site_cible', json_encode($this->site_cible))
             ->where('desc_id = :desc_id')
             ->setParameter('desc_id', $this->id);
         $qb->execute();
@@ -218,6 +230,7 @@ class Desc {
         $this->debut = $data["desc_debut"];
         $this->fin = $data["desc_fin"];
         $this->public_cible = json_decode($data["desc_public_cible"]);
+        $this->site_cible = json_decode($data["desc_site_cible"]);
         $this->payutc_fun_id = $data["payutc_fun_id"];
         $this->payutc_cat_id = $data["payutc_cat_id"];
     }
