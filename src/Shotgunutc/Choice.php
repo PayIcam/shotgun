@@ -74,6 +74,7 @@ class Choice {
                 $qbr->select('count(*) as total')
                    ->from(Config::get("db_pref", "shotgun_")."option", "o")
                    ->where('fk_desc_id = :desc_id')
+                   ->andWhere("option_status = 'V'")
                    ->setParameter('desc_id', $this->descId);
                 $rr = $qbr->execute()->fetch();
                 return min($this->stock - $r["total"], $descr->quota - $rr["total"]);
