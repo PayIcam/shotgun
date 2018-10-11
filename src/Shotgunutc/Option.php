@@ -24,7 +24,7 @@ use \Shotgunutc\Db;
 use \Shotgunutc\Config;
 
 /*
-    This class represent a shotgun 
+    This class represent a shotgun
 */
 class Option {
     protected $table_name;
@@ -69,7 +69,7 @@ class Option {
                 "user_cotisant" => $this->user_cotisant,
                 "fk_desc_id" => $this->fk_desc_id,
                 "fk_choice_id" => $this->fk_choice_id,
-                "payutc_tra_id" => $this->payutc_tra_id, 
+                "payutc_tra_id" => $this->payutc_tra_id,
                 "payutc_tra_url" => $this->payutc_tra_url,
                 "option_date_creation" => $this->date_creation,
                 "option_date_paiement" => $this->date_paiement,
@@ -118,25 +118,35 @@ class Option {
                 $choice = new Choice();
                 $choice->select($this->fk_choice_id);
                 // send
-                $to = $this->user_mail;
-                $subject = "[ShotgunUTC] - Confirmation d'achat";
-                $message = "Bonjour {$this->user_prenom} {$this->user_nom},<br />
-                <br />
-                Ce mail vient confirmer que tu as bien acheté une place pour :<br />
-                {$desc->titre} - {$choice->name}<br />
-                <br />
-                Ton n° de reservation est le : {$this->id}<br />
-                <br />
-                Normalement les organisateurs te recontacteront prochainement pour te donner plus d'informations.<br />
-                Si ce n'est pas le cas, contacte les ;) <br />
-                <br />
-                En cas de problème, n'essaie pas de contacter shotgun@assos.utc.fr (personne ne reçoit l'adresse)<br />
-                Pour les problèmes 'techniques' tu peux contacter simde@assos.utc.fr<br />
-                ";
-                $headers = 'MIME-Version: 1.0' . "\r\n";
-                $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-                $headers .= 'From: Shotgunutc <shotgun@assos.utc.fr>' . "\r\n";
-                mail($to, $subject, $message, $headers);
+                // $to = $this->user_mail;
+                // $subject = "[ShotgunUTC] - Confirmation d'achat";
+                // $message = "Bonjour {$this->user_prenom} {$this->user_nom},<br />
+                // <br />
+                // Ce mail vient confirmer que tu as bien acheté une place pour :<br />
+                // {$desc->titre} - {$choice->name}<br />
+                // <br />
+                // Ton n° de reservation est le : {$this->id}<br />
+                // <br />
+                // Normalement les organisateurs te recontacteront prochainement pour te donner plus d'informations.<br />
+                // Si ce n'est pas le cas, contacte les ;) <br />
+                // <br />
+                // En cas de problème, n'essaie pas de contacter shotgun@assos.utc.fr (personne ne reçoit l'adresse)<br />
+                // Pour les problèmes 'techniques' tu peux contacter simde@assos.utc.fr<br />
+                // ";
+                // $headers = 'MIME-Version: 1.0' . "\r\n";
+                // $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+                // $headers .= 'From: Shotgunutc <shotgun@assos.utc.fr>' . "\r\n";
+                // mail($to, $subject, $message, $headers);
+            }
+        }
+        elseif($this->status = 'W') {
+            $now = new \DateTime();
+            $creation = new \DateTime($this->date_creation);
+            $difference = $now->diff($creation);
+            $old_creation = ($difference->days>=1 || $difference->h>=1 || $difference->m>15);
+            if($old_creation) {
+                $this->status = "A";
+                $this->update();
             }
         }
         return $this->status;

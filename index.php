@@ -639,7 +639,7 @@ $app->get('/installpayutc', function() use($app, $payutcClient, $admin) {
 
 $app->get('/cron', function() use($app, $payutcClient, $admin) {
     $payutcClient = getPayutcClient("WEBSALE");
-    $options = Option::getAll();
+    $options = Option::getAll(null, null, null, 'W');
     foreach($options as $opt) {
         if($opt->status == 'W') {
             $desc = new Desc($opt->fk_desc_id);
