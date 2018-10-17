@@ -25,7 +25,7 @@ class Field {
 	/**
 	 * Constructeur.
 	 */
-	public function __construct($label, $field_name, &$value, $explanation="", $type="text") {
+	public function __construct($label, $field_name, &$value, $explanation="", $type="text", $is_typeahead=false) {
         $this->label = $label;
         $this->value =& $value;
         $this->field_name = $field_name;
@@ -34,6 +34,16 @@ class Field {
             $this->explanation = '<a href="#" data-toggle="tooltip" title="'.$explanation.'">?</a>';
         } else {
             $this->explanation = "&nbsp;";
+        }
+        if($is_typeahead) {
+            $this->typeahead_class = ' typeahead-user';
+            $this->typeahead_autocomplete = ' autocomplete=off';
+            $this->required = '';
+        }
+        else {
+            $this->typeahead_class = "";
+            $this->typeahead_autocomplete = "";
+            $this->required = 'required';
         }
 	}
 
@@ -52,7 +62,7 @@ class Field {
                 <label for="'.$this->field_name.'">'.$this->label.'</label>
                     '.$this->explanation.'
                 <div class="controls">
-                    <input required type="'.$type.'" class="form-control" name="'.$this->field_name.'" value="'.$value.'" '.$more.'>
+                    <input ' . $this->required . ' type="'.$type.'" class="form-control' . $this->typeahead_class . '" name="'.$this->field_name.'" value="'.$value . '" ' . $more . $this->typeahead_autocomplete . '>
                 </div>
             </div>';
     }

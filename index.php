@@ -151,7 +151,10 @@ $app->get('/shotgun', function() use($app, $isAdminFondation) {
     }
     $shotgun = new Desc();
     $shotgun->select($id);
-    if((!in_array('all', $shotgun->public_cible) && (!empty($user) && !in_array($user->promo, $shotgun->public_cible))) || !in_array($user->site, $shotgun->site_cible)) {
+
+    if(((!empty($shotgun->public_cible) && !in_array('all', $shotgun->public_cible) && (!empty($user) && !in_array($user->promo, $shotgun->public_cible)))
+    || !empty($shotgun->site_cible) && !in_array($user->site, $shotgun->site_cible))
+    && !empty($shotgun->email_cible) && !in_array($user->mail, $shotgun->email_cible)) {
         $app->flash("info", "Vous ne faites pas partie du public cible de ce shotgun.");
         $app->redirect("index");
     }
@@ -662,6 +665,15 @@ $app->get('/callback', function() use($app, $payutcClient, $admin) {
     }
     if (isset($_GET['url'])) $app->redirect($_GET['url']);
     else $app->redirect('index');
+});
+
+$app->get('/autocomplete', function() use($app, $payutcClient, $admin) {
+    global $_REQUEST;
+    isset($_REQUEST['query']) ? $queryString = $_REQUEST['query'] : $queryString = "";
+    $result = $payutcClient->userAutocomplete(array("queryString" => $queryString));
+
+    echo json_encode($result);
+    return $result;
 });
 
 $app->run();

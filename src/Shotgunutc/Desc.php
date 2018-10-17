@@ -44,6 +44,7 @@ class Desc {
     public $fin;
     public $public_cible;
     public $site_cible;
+    public $email_cible;
     public $payutc_fun_id;
     public $payutc_cat_id;
 
@@ -68,6 +69,7 @@ class Desc {
         // die();
         $promos = array(
             'all'            =>'Tout le monde qui a un mail icam.fr',
+            'aucune'         => 'Public exclusivement nonimatif',
             'Intégrés'             =>array(119=>119,120=>120,121=>121,122=>122,123=>123),
             'Apprentissage'            =>array(2019=>2019,2020=>2020,2021=>2021,2022=>2022,2023=>2023),
             'Ouvert'           =>array(24=>24),
@@ -76,6 +78,7 @@ class Desc {
             'Dernières promo sorties' => array(118=>118, 117=>117, 116=>116, 115=>115, 114=>114, 113=>113)
         );
         $sites = array('Lille' => 'Lille', 'Toulouse' => 'Toulouse');
+        $default_value = null;
 
         $form = new Form();
         $form->title = $title;
@@ -87,8 +90,10 @@ class Desc {
         $form->addItem(new Field("Nombre max de places", "quota", $this->quota, "Combien de ventes au maximum ?", "number"));
         $form->addItem(new Field("Debut", "debut", $this->debut, "Debut du shotgun", "datetime"));
         $form->addItem(new Field("Fin", "fin", $this->fin, "Fin du shotgun", "datetime"));
-        $form->addItem(new Select("Promos visé", "public_cible", $this->public_cible, $promos, "Public cible visé: quelles promos ont le droit de voir l'event"));
+        $form->addItem(new Select("Promos visées", "public_cible", $this->public_cible, $promos, "Promos visées: quelles promos ont le droit de voir l'event"));
         $form->addItem(new Select_simple("Site visé", "site_cible", $this->site_cible, $sites, "Sites visés: quels sites ont le droit de voir l'event"));
+        $form->addItem(new Field("Personnes autorisées directement", "typeahead_user", $default_value, "Entrez les personnes ayant accès à l'évènement indépendemment de leur promotion et site", "text", true));
+        $form->addItem(new Select_emails("Emails autorisés", "email_cible", $this->email_cible, "Vous pouvez ajouter des emails particuliers, qui auront accès à votre évènement"));
         return $form;
     }
 
@@ -121,6 +126,7 @@ class Desc {
                 "desc_fin" => $this->fin,
                 "desc_public_cible" => json_encode($this->public_cible),
                 "desc_site_cible" => json_encode($this->site_cible),
+                "desc_email_cible" => json_encode($this->email_cible),
                 "payutc_fun_id" => $this->payutc_fun_id,
                 "payutc_cat_id" => $this->payutc_cat_id
             ));
@@ -150,6 +156,8 @@ class Desc {
             ->setParameter('public_cible', json_encode($this->public_cible))
             ->set('d.desc_site_cible', ':site_cible')
             ->setParameter('site_cible', json_encode($this->site_cible))
+            ->set('d.desc_email_cible', ':email_cible')
+            ->setParameter('email_cible', json_encode($this->email_cible))
             ->where('desc_id = :desc_id')
             ->setParameter('desc_id', $this->id);
         $qb->execute();
@@ -231,6 +239,7 @@ class Desc {
         $this->fin = $data["desc_fin"];
         $this->public_cible = json_decode($data["desc_public_cible"]);
         $this->site_cible = json_decode($data["desc_site_cible"]);
+        $this->email_cible = json_decode($data["desc_email_cible"]);
         $this->payutc_fun_id = $data["payutc_fun_id"];
         $this->payutc_cat_id = $data["payutc_cat_id"];
     }

@@ -2,7 +2,7 @@
         <p>
             &copy; PayIcam - 2016
             <?php if ($isAdminFondation): ?>
-                - <a href="admin">Administration</a> 
+                - <a href="admin">Administration</a>
             <?php endif ?>
             - <a href="../" title="Retour PayIcam">Retour PayIcam</a></p>
     </div>
@@ -14,9 +14,11 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <!-- Latest compiled and minified JavaScript -->
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/typeahead.min.js"></script>
+<script src="js/autocomplete.js"></script>
 <script src="static/jquery.plugin.js"></script>
-<script src="static/jquery.countdown.js"></script>
+<!--<script src="static/jquery.countdown.js"></script>
 <script>
     function refresh() {
         location.reload();
@@ -42,6 +44,6 @@
     $('#Countdown6').countdown({until: c6, layout: '<b>{dn} {dl} {hnn}{sep}{mnn}{sep}{snn}</b> {desc}', onExpiry: refresh});
 
 })(jQuery);
-    </script>
+    </script>-->
     </body>
 </html>

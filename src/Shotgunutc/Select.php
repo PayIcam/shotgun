@@ -34,9 +34,7 @@ class Select {
         } else {
             $this->explanation = "&nbsp;";
         }
-
     }
-
 
     public function html() {
 
@@ -92,7 +90,6 @@ class Select_simple {
         } else {
             $this->explanation = "&nbsp;";
         }
-
     }
 
     public function html() {
@@ -132,5 +129,42 @@ class Select_simple {
     public function load() {
         global $_REQUEST;
         $this->selectedValues = $_REQUEST[$this->field_name];
+    }
+}
+
+class Select_emails {
+    public function __construct($label, $field_name, &$selectedValues, $explanation="") {
+        $this->label = $label;
+        $this->selectedValues = &$selectedValues;
+        $this->field_name = $field_name;
+        if($explanation) {
+            $this->explanation = '<a href="#" data-toggle="tooltip" title="'.$explanation.'">?</a>';
+        } else {
+            $this->explanation = "&nbsp;";
+        }
+    }
+    public function html() {
+
+            $renduHtml = '
+            <div class="form-group">
+                <label for="'.$this->field_name.'">'.$this->label.'</label>
+                <div class="controls">
+                <select multiple name="'.$this->field_name.'[]" id="'.$this->field_name.'">';
+                if($this->selectedValues) {
+                    foreach ($this->selectedValues as $value) {
+                        $renduHtml .= '<option selected>'.$value.'</option>';
+                    }
+                }
+                $renduHtml .= '</select>
+                    </div>
+                </div>';
+                return $renduHtml;
+    }
+
+    public function load() {
+        global $_REQUEST;
+        if(isset($_REQUEST[$this->field_name])) {
+            $this->selectedValues = $_REQUEST[$this->field_name];
+        }
     }
 }
