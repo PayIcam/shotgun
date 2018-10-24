@@ -7,6 +7,7 @@
         <meta name="description" content="Shotgun est une micro-billetterie, pour les associations de l'Icam.">
         <meta name="author" content="PayIcam">
         <link rel="shortcut icon" href="static/favicon.png">
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-112368112-1"></script>
 
         <title><?php echo $title; ?></title>
 
