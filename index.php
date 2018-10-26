@@ -28,6 +28,14 @@ use Shotgunutc\Cas;
 use \Ginger\Client\GingerClient;
 use \JsonClient\JsonException;
 
+function is_in_email_cible($email, $emails) {
+    if(empty($emails)) {
+        return true;
+    } else {
+        return in_array($email, $emails);
+    }
+}
+
 function checkRight($payutcClient, $user, $app, $fun_check, $fun_id) {
     if($fun_check and $fun_id == null) {
         if($payutcClient->isAdmin()) {
@@ -154,7 +162,7 @@ $app->get('/shotgun', function() use($app, $isAdminFondation) {
 
     if(((!empty($shotgun->public_cible) && !in_array('all', $shotgun->public_cible) && (!empty($user) && !in_array($user->promo, $shotgun->public_cible)))
     || !empty($shotgun->site_cible) && !in_array($user->site, $shotgun->site_cible))
-    && !empty($shotgun->email_cible) && !in_array($user->mail, $shotgun->email_cible)) {
+    && is_in_email_cible($user->mail, $shotgun->email_cible)) {
         $app->flash("info", "Vous ne faites pas partie du public cible de ce shotgun.");
         $app->redirect("index");
     }
