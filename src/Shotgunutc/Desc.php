@@ -69,7 +69,7 @@ class Desc {
         // die();
         $promos = array(
             'all'            =>'Tout le monde qui a un mail icam.fr',
-            'aucune'         => 'Public exclusivement nonimatif',
+            'none'         => 'Public exclusivement nonimatif',
             'Intégrés'             =>array(119=>119,120=>120,121=>121,122=>122,123=>123),
             'Apprentissage'            =>array(2019=>2019,2020=>2020,2021=>2021,2022=>2022,2023=>2023),
             'Ouvert'           =>array(24=>24),

@@ -28,11 +28,40 @@ use Shotgunutc\Cas;
 use \Ginger\Client\GingerClient;
 use \JsonClient\JsonException;
 
-function is_in_email_cible($email, $emails) {
-    if(empty($emails)) {
-        return true;
-    } else {
-        return in_array($email, $emails);
+function user_is_targetted($user, $shotgun) {
+    if(!function_exists('email_in_email_list')) {
+        function email_in_email_list($email, $emails) {
+            if(empty($emails)) {
+                return false;
+            } else {
+                return in_array($email, $emails);
+            }
+        }
+    }
+
+    if($shotgun->is_public == 1) {
+        if(in_array($user->site, $shotgun->site_cible))
+        {
+            $promos = $shotgun->public_cible;
+            if(in_array("all", $promos)) {//Si il a rempli all quelque part
+                return true;
+            } elseif($promos[0] === 'none') {//Si il a mis aucune promo UNIQUEMENT
+                return email_in_email_list($user->mail, $shotgun->email_cible);
+            } else {
+                if(in_array($user->promo, $promos)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        else {//Si il est targetté explicitement, on le laisse quand même même si le site est faux
+            return email_in_email_list($user->mail, $shotgun->email_cible);
+        }
+    }
+    else {//shotgun pas public
+        return false;
     }
 }
 
@@ -160,9 +189,7 @@ $app->get('/shotgun', function() use($app, $isAdminFondation) {
     $shotgun = new Desc();
     $shotgun->select($id);
 
-    if(((!empty($shotgun->public_cible) && !in_array('all', $shotgun->public_cible) && (!empty($user) && !in_array($user->promo, $shotgun->public_cible)))
-    || !empty($shotgun->site_cible) && !in_array($user->site, $shotgun->site_cible))
-    && is_in_email_cible($user->mail, $shotgun->email_cible)) {
+    if(!user_is_targetted($user, $shotgun)) {
         $app->flash("info", "Vous ne faites pas partie du public cible de ce shotgun.");
         $app->redirect("index");
     }
