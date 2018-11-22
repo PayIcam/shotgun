@@ -3,7 +3,6 @@ $(document).ready(function() {
     console.log($('.typeahead-user'));
     $('.typeahead-user').typeahead({
         source: function (query, process) {
-            console.log('salut');
             return $.get('autocomplete', { query: query, dataType: 'json' }, function (data) {
                 map = {};
                 usernames = [];
@@ -19,7 +18,6 @@ $(document).ready(function() {
             });
         },
         updater: function(mail) {
-            console.log(mail);
             if(mail !== '') {
                 var option = "<option selected>" + mail + "</option>";
                 $('#email_cible').append(option);

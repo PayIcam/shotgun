@@ -20,7 +20,7 @@
   	$diff = $now->diff($debut);
   	if($diff->invert) {
   		if($now->diff($fin)->invert) {
-  			echo "Vente terminé.";
+  			echo "Vente terminée.";
   		} else {
   			echo "Vente en cours !";
   		}
