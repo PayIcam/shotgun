@@ -189,7 +189,7 @@ class Desc {
     /*
         Return all the registered shotguns
     */
-    public static function getAll($fun_id = null, $max = 10) {
+    public static function getAll($fun_id = null, $max = 15) {
         $qb = self::getQbBase();
         if($fun_id) {
             $qb->where('d.payutc_fun_id = :fun_id')
@@ -197,7 +197,7 @@ class Desc {
         }
         $qb->orderBy('d.desc_debut', 'DESC');
         if($max) {
-            $qb->setMaxResults(10);
+            $qb->setMaxResults($max);
         }
         $ret = Array();
         foreach($qb->execute()->fetchAll() as $data) {

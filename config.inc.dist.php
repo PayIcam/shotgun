@@ -12,5 +12,6 @@
     "ginger_server": "http:\/\/payicam.dev\/ginger\/index.php\/v1\/",
     "ginger_key": "xxx",
     "namespace": "",
-    "system_id":  "68"
+    "system_id":  "68",
+    "debug": false
 }

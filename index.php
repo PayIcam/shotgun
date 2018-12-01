@@ -114,7 +114,7 @@ $admin = $payutcClient->isSuperAdmin();
 $isAdminFondation = $payutcClient->isAdmin();
 $status = $payutcClient->getStatus();
 
-$app = new \Slim\Slim();
+$app = new \Slim\Slim(array('debug' => Config::get('debug')));
 
 $app->hook('slim.before', function () use ($app, $payutcClient, $admin) {
     // check that system is installed
