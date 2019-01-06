@@ -41,7 +41,8 @@
     <div class="container">
         <div class="header">
             <ul class="nav nav-pills pull-right">
-                <li <?php if (isset($active) && $active == "index") { ?> class="active" <?php } ?>><a href="index">Accueil</a></li>
+                <li <?php if (isset($active) && $active == "index") { ?> class="active" <?php } ?>><a href="..">Accueil PayIcam</a></li>
+                <li <?php if (isset($active) && $active == "index") { ?> class="active" <?php } ?>><a href="index">Liste des Shotguns</a></li>
                 <li <?php if (isset($active) && $active == "about") { ?> class="active" <?php } ?>><a href="about">A propos</a></li>
                 <?php if(isset($_SESSION['username'])): ?>
                     <li><a href="logout">Deconnexion</a></li>
