@@ -11,7 +11,7 @@
         continue;
     } $shotgunAffiches += 1; ?>
   <h4><?php echo $shotgun->titre; ?></h4>
-  <?php echo $shotgun->desc; ?>
+  <?php echo nl2br($shotgun->desc); ?>
   <a href="shotgun?id=<?php echo $shotgun->id; ?>" class="btn btn-primary pull-right">Accéder à l'événement</a><br /><br />
   <?php
   	$debut = new DateTime($shotgun->debut);

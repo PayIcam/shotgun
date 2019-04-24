@@ -77,7 +77,7 @@ class Desc {
             'Ingenieur'            =>'Tous les Ingénieur (@promo.icam.fr)',
             'Dernières promo sorties' => array(118=>118, 117=>117, 116=>116, 115=>115, 114=>114, 113=>113)
         );
-        $sites = array('Lille' => 'Lille', 'Toulouse' => 'Toulouse');
+        $sites = array('Lille' => 'Lille', 'Toulouse' => 'Toulouse', 'Autre' => 'Autre');
         $default_value = null;
 
         $form = new Form();
@@ -119,7 +119,7 @@ class Desc {
         $conn->insert($this->table_name,
             array(
                 "desc_titre" => $this->titre,
-                "desc_desc" => $this->desc,
+                "desc_desc" => nl2br($this->desc),
                 "desc_is_public" => $this->is_public,
                 "desc_quota" => $this->quota,
                 "desc_debut" => $this->debut,

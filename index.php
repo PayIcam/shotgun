@@ -28,6 +28,10 @@ use Shotgunutc\Cas;
 use \Ginger\Client\GingerClient;
 use \JsonClient\JsonException;
 
+function br2nl($string){
+   return str_replace('<br />', "", $string);
+}
+
 function user_is_targetted($user, $shotgun) {
     if(!function_exists('email_in_email_list')) {
         function email_in_email_list($email, $emails) {
