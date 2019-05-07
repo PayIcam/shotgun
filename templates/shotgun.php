@@ -18,9 +18,6 @@ use \Shotgunutc\Option;
         if(count($opt) > 0) {
             $has_place = true;
             $o = $opt[0];
-            if($o->status == 'W') {
-                $o->checkStatus($payutcClient, $desc->payutc_fun_id);
-            }
             if($o->status == 'V') {
                 echo '<div class="alert alert-info">Félicitation '.$user->prenom.' '.$user->nom.', Tu as une place pour cet événement. Les organisateurs te contacteront par mail très prochainement.</div>';
             } else {
