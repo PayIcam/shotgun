@@ -226,8 +226,8 @@ class Choice {
             "items" => json_encode(array(array($art_id, 1))),
             "fun_id" => $desc->payutc_fun_id,
             "mail" => $user->mail,
-            "return_url" => Config::get("self_url")."shotgun?id=".$desc->id, // En fait ça passe pq shotgun regarde lui mm si le status de la transaction est tjs à W si elle n'a pas été mise à jour
-            "callback_url" => Config::get("self_url")."callback" // N'est même pas utilisé pour le moment ...
+            "return_url" => Config::get("self_url")."callback?url=shotgun?id=" . $desc->id, //
+            "callback_url" => Config::get("self_url")."callback" //
         ));
 
         $opt = new Option();
