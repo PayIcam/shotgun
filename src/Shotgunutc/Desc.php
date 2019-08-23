@@ -138,6 +138,8 @@ class Desc {
         Some fields, like $creator, $payutc_fun_id and $payutc_cat_id are volunterely not updatable.
     */
     public function update() {
+        $this->is_public = $this->is_public ? 1:0;
+
         $qb = Db::createQueryBuilder();
         $qb->update(Config::get("db_pref", "shotgun_")."desc", 'd')
             ->set('d.desc_titre', ':titre')
